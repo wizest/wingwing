@@ -1,0 +1,231 @@
+// Body
+	#include "rush_o2o.run" // orthogonal to orthogonal
+	#include "rush_o2d.run" // orthogonal to diagonal
+	#include "rush_d2o.run" // diagonal to orthogonal
+	#include "rush_d2d.run" // diagonal to diagonal
+
+// Process paths and Interface to body
+	// Diagonal to Diagonal	///////////////////////////////////////////
+	void run_rRR()
+	{
+		// update dir,pos
+		update_pos(R);
+
+		run_rush_D2D(	R,
+						INFO_rRR_inSTP,
+						INFO_rRR_aSTP,
+						INFO_rRR_uSTP,
+						INFO_rRR_dPL,
+						INFO_rRR_dPR,
+						INFO_rRR_outSTP
+					);
+	}
+	void run_rLL()
+	{
+		// update dir,pos
+		update_pos(L);
+
+		run_rush_D2D(	L,
+						INFO_rLL_inSTP,
+						INFO_rLL_aSTP,
+						INFO_rLL_uSTP,
+						INFO_rLL_dPL,
+						INFO_rLL_dPR,
+						INFO_rLL_outSTP
+					);
+	}
+	void run_rLR()
+	{
+		// update dir,pos
+		update_pos(L);
+
+		run_rush_DF();
+	}
+	void run_rRL()
+	{
+		// update dir,pos
+		update_pos(R);
+
+		run_rush_DF();
+	}
+
+	// Diagonal to Orthogonal /////////////////////////////////////////
+	void run_rRF()
+	{
+		// update dir,pos
+		update_pos(R);
+
+		run_rush_D2O(	R,
+						INFO_rRF_inSTP,
+						INFO_rRF_aSTP,
+						INFO_rRF_uSTP,
+						INFO_rRF_dPL,
+						INFO_rRF_dPR,
+						INFO_rRF_outSTP
+					);
+	}
+	void run_rLF()
+	{
+		// update dir,pos
+		update_pos(L);
+
+		run_rush_D2O(	L,
+						INFO_rLF_inSTP,
+						INFO_rLF_aSTP,
+						INFO_rLF_uSTP,
+						INFO_rLF_dPL,
+						INFO_rLF_dPR,
+						INFO_rLF_outSTP
+					);
+	}
+	void run_rRRF()
+	{
+		// update dir,pos
+		update_pos(R);	update_pos(R);
+
+		run_rush_D2O(	R,
+						INFO_rRRF_inSTP,
+						INFO_rRRF_aSTP,
+						INFO_rRRF_uSTP,
+						INFO_rRRF_dPL,
+						INFO_rRRF_dPR,
+						INFO_rRRF_outSTP
+					);
+	}
+	void run_rLLF()
+	{
+		// update dir,pos
+		update_pos(L);	update_pos(L);
+
+		run_rush_D2O(	L,
+						INFO_rLLF_inSTP,
+						INFO_rLLF_aSTP,
+						INFO_rLLF_uSTP,
+						INFO_rLLF_dPL,
+						INFO_rLLF_dPR,
+						INFO_rLLF_outSTP
+					);
+	}
+
+	// Orthogonal to Diagonal /////////////////////////////////////////
+	void run_rFR()
+	{
+		// update dir,pos
+		update_pos(F);
+
+		run_rush_O2D(	R,
+						INFO_rFR_inSTP,
+						INFO_rFR_aSTP,
+						INFO_rFR_uSTP,
+						INFO_rFR_dPL,
+						INFO_rFR_dPR,
+						INFO_rFR_outSTP
+					);
+	}
+	void run_rFL()
+	{
+		// update dir,pos
+		update_pos(F);
+
+		run_rush_O2D(	L,
+						INFO_rFL_inSTP,
+						INFO_rFL_aSTP,
+						INFO_rFL_uSTP,
+						INFO_rFL_dPL,
+						INFO_rFL_dPR,
+						INFO_rFL_outSTP
+					);
+	}
+	void run_rFRR()
+	{
+		// update dir,pos
+		update_pos(F);	update_pos(R);
+
+		run_rush_O2D(	R,
+						INFO_rFRR_inSTP,
+						INFO_rFRR_aSTP,
+						INFO_rFRR_uSTP,
+						INFO_rFRR_dPL,
+						INFO_rFRR_dPR,
+						INFO_rFRR_outSTP
+					);
+	}
+	void run_rFLL()
+	{
+		// update dir,pos
+		update_pos(F);	update_pos(L);
+
+		run_rush_O2D(	L,
+						INFO_rFLL_inSTP,
+						INFO_rFLL_aSTP,
+						INFO_rFLL_uSTP,
+						INFO_rFLL_dPL,
+						INFO_rFLL_dPR,
+						INFO_rFLL_outSTP
+					);
+	}
+
+	// Orthogonal to Orthogonal ///////////////////////////////////////
+	void run_rFF()
+	{
+		run_rush_FF();
+	}
+	void run_rFRF()
+	{
+		// update dir,pos
+		update_pos(F);	update_pos(R);
+
+		run_rush_O2O(	R,
+						INFO_rFRF_inSTP,
+						INFO_rFRF_aSTP,
+						INFO_rFRF_uSTP,
+						INFO_rFRF_dPL,
+						INFO_rFRF_dPR,
+						INFO_rFRF_outSTP
+					);
+	}
+	void run_rFLF()
+	{
+		// update dir,pos
+		update_pos(F);	update_pos(L);
+
+		run_rush_O2O(	L,
+						INFO_rFLF_inSTP,
+						INFO_rFLF_aSTP,
+						INFO_rFLF_uSTP,
+						INFO_rFLF_dPL,
+						INFO_rFLF_dPR,
+						INFO_rFLF_outSTP
+					);
+	}
+	void run_rFRRF()
+	{
+		// update dir,pos
+		update_pos(F);	update_pos(R);	update_pos(R);
+
+		run_rush_O2O(	R,
+						INFO_rFRRF_inSTP,
+						INFO_rFRRF_aSTP,
+						INFO_rFRRF_uSTP,
+						INFO_rFRRF_dPL,
+						INFO_rFRRF_dPR,
+						INFO_rFRRF_outSTP
+					);
+	}
+	void run_rFLLF()
+	{
+		// update dir,pos
+		update_pos(F);	update_pos(L);	update_pos(L);
+
+		run_rush_O2O(	L,
+						INFO_rFLLF_inSTP,
+						INFO_rFLLF_aSTP,
+						INFO_rFLLF_uSTP,
+						INFO_rFLLF_dPL,
+						INFO_rFLLF_dPR,
+						INFO_rFLLF_outSTP
+					);
+	}
+
+
+

@@ -1,0 +1,144 @@
+void set_run_rush_280()		// 280 steps, 101.038 cm/s
+{
+	set_run_rush 	= set_run_rush_280;
+
+	// The accelation over 10 m/s^2 is
+	// very poor with floor's dirty and so on !!!
+
+	#define STP_OFFSET_280		(-0)
+
+	// common (auxiliary)
+	INFO_iSPD_RUSH	= 280;
+	INFO_iSPD_SRUSH	= 210; // 210 steps, 87.1378 cm/s
+	// aSFRL		SR45
+	INFO_aSFRL_inSTP= 105	-7	-7	-3-2;
+	INFO_aSFRL_aSTP = 120;
+	INFO_aSFRL_uSTP	= 30	+12;
+	INFO_aSFRL_dPL	= 1;
+	INFO_aSFRL_dPR	= 2;
+	// aSFRF		SR90
+	INFO_aSFRF_inSTP= 150	+7	+7;
+
+	INFO_aSFRF_aSTP	= 110	-5;
+	INFO_aSFRF_uSTP	= 300;
+	INFO_aSFRF_dPL	= 1;
+	INFO_aSFRF_dPR	= 2;
+	// aSFRRL		SR135
+	INFO_aSFRRL_inSTP= 145	-45;
+	INFO_aSFRRL_aSTP = 120	-12;
+	INFO_aSFRRL_uSTP = 460	+15	+7;
+	INFO_aSFRRL_dPL	 = 1;
+	INFO_aSFRRL_dPR	 = 2;
+	// rFF		F	  	O to O
+	INFO_rFF_aMAX	= 1300;
+	// rFR		R45		O to D
+	INFO_rFR_inSTP	= 0					+STP_OFFSET_280;
+	INFO_rFR_aSTP	= 139			+1;
+	INFO_rFR_uSTP	= 31	+1		+2	-1;
+	INFO_rFR_dPL	= 1;
+	INFO_rFR_dPR	= 2;
+	INFO_rFR_outSTP	= 0;
+	// rFL		L45		O to D
+	INFO_rFL_inSTP	= 0					+STP_OFFSET_280;
+	INFO_rFL_aSTP	= 139			+1	+1;
+	INFO_rFL_uSTP	= 31	+1		+2	+2+1;
+	INFO_rFL_dPL	= 2;
+	INFO_rFL_dPR	= 1;
+	INFO_rFL_outSTP	= 0;
+	// rFRF		R90		O to O
+	INFO_rFRF_inSTP	= 30	+12 		+STP_OFFSET_280;
+	INFO_rFRF_aSTP	= 106	-1;
+	INFO_rFRF_uSTP	= 389	-3-3-3 +6;
+	INFO_rFRF_dPL	= 1;
+	INFO_rFRF_dPR	= 2;
+	INFO_rFRF_outSTP= 30;
+	// rFLF		L90	    O to O
+	INFO_rFLF_inSTP	= 30	+12 		+STP_OFFSET_280;
+	INFO_rFLF_aSTP	= 106;
+	INFO_rFLF_uSTP	= 389	+3;
+	INFO_rFLF_dPL	= 2;
+	INFO_rFLF_dPR	= 1;
+	INFO_rFLF_outSTP= 30;
+	// rFRR		R135	O to D
+	// Note spd LEAP
+	INFO_rFRR_inSTP	= 15 -9				+STP_OFFSET_280;
+	INFO_rFRR_aSTP	= 140	-1;
+	INFO_rFRR_uSTP	= 502	-2-3-3-2 ;
+	INFO_rFRR_dPL	= 0;
+	INFO_rFRR_dPR 	= 2;
+	INFO_rFRR_outSTP= 0;
+	// rFLL		L135	O to D
+	// Note spd LEAP
+	INFO_rFLL_inSTP	= 15 -7				+STP_OFFSET_280;
+	INFO_rFLL_aSTP	= 140;
+	INFO_rFLL_uSTP	= 502;
+	INFO_rFLL_dPL	= 2;
+	INFO_rFLL_dPR	= 0;
+	INFO_rFLL_outSTP= 0;
+	// rFRRF	RU		O to O
+	// Note spd LEAP
+	INFO_rFRRF_inSTP	= 0				+STP_OFFSET_280;
+	INFO_rFRRF_aSTP		= 135 	-1;
+	INFO_rFRRF_uSTP		= 747	+5 +10 -2-4;
+	INFO_rFRRF_dPL		= 0;
+	INFO_rFRRF_dPR		= 2;
+	INFO_rFRRF_outSTP	= 0;
+	// rFLLF	LU		O to O
+	// Note spd LEAP
+	INFO_rFLLF_inSTP	= 0				+STP_OFFSET_280;
+	INFO_rFLLF_aSTP		= 135;
+	INFO_rFLLF_uSTP		= 747	+5	+5	+5;
+	INFO_rFLLF_dPL		= 2;
+	INFO_rFLLF_dPR		= 0;
+	INFO_rFLLF_outSTP	= 0;
+	// rRF		R45 out		D to O
+	INFO_rRF_inSTP	= 110		  -10		+STP_OFFSET_280;
+	INFO_rRF_aSTP	= INFO_rFR_aSTP;
+	INFO_rRF_uSTP	= INFO_rFR_uSTP;
+	INFO_rRF_dPL	= INFO_rFR_dPL;
+	INFO_rRF_dPR	= INFO_rFR_dPR;
+	INFO_rRF_outSTP	= 0;
+	// rLF		L45 out		D to O
+	INFO_rLF_inSTP	= 110		  -10		+STP_OFFSET_280;
+	INFO_rLF_aSTP	= INFO_rFL_aSTP;
+	INFO_rLF_uSTP	= INFO_rFL_uSTP;
+	INFO_rLF_dPL	= INFO_rFL_dPL;
+	INFO_rLF_dPR	= INFO_rFL_dPR;
+	INFO_rLF_outSTP	= 0;
+	// rRRF		R135 out	D to O
+	// Note spd LEAP
+	INFO_rRRF_inSTP	= 17	+10	-1		+STP_OFFSET_280;
+	INFO_rRRF_aSTP	= INFO_rFRR_aSTP;
+	INFO_rRRF_uSTP	= INFO_rFRR_uSTP;
+	INFO_rRRF_dPL	= INFO_rFRR_dPL;
+	INFO_rRRF_dPR	= INFO_rFRR_dPR;
+	INFO_rRRF_outSTP= 0;
+	// rLLF		L135 out	D to O
+	// Note spd LEAP
+	INFO_rLLF_inSTP = 17		-1		+STP_OFFSET_280;
+	INFO_rLLF_aSTP	= INFO_rFLL_aSTP;
+	INFO_rLLF_uSTP	= INFO_rFLL_uSTP;
+	INFO_rLLF_dPL	= INFO_rFLL_dPL;
+	INFO_rLLF_dPR	= INFO_rFLL_dPR;
+	INFO_rLLF_outSTP= 0;
+
+	// rRR					D to D
+	// Note spd LEAP
+	INFO_rRR_inSTP	= 0					+STP_OFFSET_280;
+	INFO_rRR_aSTP	= 163;//240	-10	-7	-4	-4	+1+2	;
+	INFO_rRR_uSTP	= 120	-2;//0;
+	INFO_rRR_dPL	= 1;//0;
+	INFO_rRR_dPR	= 2;
+	INFO_rRR_outSTP	= 0;
+	// rLL					D to D
+	// Note spd LEAP
+	INFO_rLL_inSTP	= 0					+STP_OFFSET_280;
+	INFO_rLL_aSTP	= 165+1;//240	-10	-7	-4	-4	+1+2;
+	INFO_rLL_uSTP	= 120	;//0;
+	INFO_rLL_dPL	= 2;
+	INFO_rLL_dPR	= 1;//0;
+	INFO_rLL_outSTP	= 0;
+
+	// rDF (rLR/rRL)
+	INFO_rDF_aMAX	= INFO_rFF_aMAX;
+}

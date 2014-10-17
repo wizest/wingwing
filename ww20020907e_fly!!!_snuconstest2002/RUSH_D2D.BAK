@@ -1,0 +1,132 @@
+void run_rush_D2D(int tDIR, int inSTP,int aSTP,int uSTP,int dPL,int dPR,int outSTP)
+{
+	set_tSPD();
+
+	reset_steps();	reset_spd_diff();	spd_ptr = INFO_iSPD_RUSH;
+	enable_adj();
+
+	// wait edge
+	while(1)	{
+		scan_level_D();
+		scan_edge();
+
+		adj_DF0a();	//adj_DF0();
+		if ( tDIR == L )	{
+			if ( edge_info_L45 == EDGE_DN ) {
+				edge_info_L45 = edge_info_R45 = EDGE_UNKNOWN;
+				goto END_WAIT_EDGE_D2D;
+			}
+		}
+		else /* if ( tDIR == R ) */	{
+			if ( edge_info_R45 == EDGE_DN ) {
+				edge_info_L45 = edge_info_R45 = EDGE_UNKNOWN;
+				goto END_WAIT_EDGE_D2D;
+			}
+		}
+		sync_step();
+	}
+	END_WAIT_EDGE_D2D:
+
+	disable_adj();
+	reset_steps();	while(inSTP > steps);//{sync_step();	adj_DF0();}
+	//disable_adj();
+	if 	( tDIR == L )		turn_left (INFO_iSPD_RUSH,aSTP,uSTP,dPL,dPR);
+	else /* (tDIR == R) */	turn_right(INFO_iSPD_RUSH,aSTP,uSTP,dPL,dPR);
+	reset_steps();
+	enable_adj();
+	refresh_level_D();
+	refresh_edge();
+	while(outSTP > steps)	{
+		scan_level_D();
+		scan_edge();
+		adj_DF0a();
+		sync_step();
+	}
+
+	set_fSPD();
+}
+void run_rush_DF()
+{
+	reset_steps();	reset_spd_diff();	spd_ptr = INFO_iSPD_RUSH;
+	enable_adj();
+
+	// Find cnts of accl blk /////////////////////////////////////////////
+				 int  cnt_DF;
+		unsigned int  v_run_fptr;
+
+		// count known rDF Block & update dir,pos
+		cnt_DF 		= 1;
+		v_run_fptr 	= run_fptr;
+
+		while ( v_run_fptr < run_rptr )	{
+			if 		( run_queue[ v_run_fptr ] == run_rLR ) {
+				mouse_dir 	= get_absolute_dir(L , mouse_dir);
+				mouse_pos  += dxy [ mouse_dir ];
+				v_run_fptr++;	cnt_DF++;
+			}
+			else if ( run_queue[ v_run_fptr ] == run_rRL ) {
+				mouse_dir 	= get_absolute_dir(R , mouse_dir);
+				mouse_pos  += dxy [ mouse_dir ];
+				v_run_fptr++;	cnt_DF++;
+			}
+			else break;
+		}
+
+		// process runs
+		int i;	i = cnt_DF - 1;	while ( i-- )  	get_run();
+
+	// ACCL //////////////////////////////////////////////////////////////
+		int full_steps;
+		int accl_steps;
+		int unif_steps;
+		int goal_steps;
+
+		#define STABLE_iSTP_DF		(HALFBLK_D)  	// in
+		#define EDGE_SCAN_STP_DF	(ONEBLK_D)		//Don't touch!!
+
+		full_steps = cnt_DF * ONEBLK_D - STABLE_iSTP_DF - EDGE_SCAN_STP_DF;
+		accl_steps = ( (full_steps >> 1) > INFO_rDF_aMAX ) ? INFO_rDF_aMAX : (full_steps >> 1);
+		unif_steps = full_steps - (accl_steps << 1);
+
+		// accl
+		//if ( cnt_DF > 1 ) 	{
+		if ( full_steps > 0 )	{
+
+			// stable
+			spd_diff = 0;	goal_steps = STABLE_iSTP_DF;
+			equal_spd_ptr();
+			while (steps < goal_steps) 	{adj_DF0();	sync_step();}
+			// enaccl
+			spd_diff = 1; 	goal_steps += accl_steps;
+			equal_spd_ptr();
+			while (steps < goal_steps)	{adj_DF0();	sync_step();}
+			// unif
+			spd_diff = 0; 	goal_steps += unif_steps;
+//			spd_diff = 0; 	goal_steps += unif_steps + (accl_steps >> 1); // UNSTABLE
+			equal_spd_ptr();
+			while (steps < goal_steps)	{adj_DF0();	sync_step();}
+			// deaccl
+			spd_diff = -1;	goal_steps += accl_steps;
+//			spd_diff = -2;	goal_steps += (accl_steps >> 1) ; // UNSTABLE
+			equal_spd_ptr();
+			while (steps < goal_steps)
+			{
+				adj_DF0();
+//				if ( spd_ptr_L < INFO_iSPD_RUSH )	{	spd_diff = 0;	spd_ptr = INFO_iSPD_RUSH; }
+				sync_step();
+			}
+		}
+		// DO NOT accl
+		else {
+			// unif
+			//spd_diff = 0;	goal_steps = cnt_DF * ONEBLK_D - EDGE_SCAN_STP;
+			//while (steps < goal_steps)	{
+			//	adj_DF0a();   //	adj_F45();
+			//	sync_step();
+			//}
+		}
+		refresh_level_D();
+		refresh_edge();
+		reset_spd_diff();	spd_ptr	= INFO_iSPD_RUSH;
+	// end ACCL //////////////////////////////////////////////////////////
+}

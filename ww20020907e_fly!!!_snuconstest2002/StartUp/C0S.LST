@@ -1,0 +1,1068 @@
+Turbo Assembler	 Version 3.1	    03/17/01 23:14:08	    Page 1
+c0.ASM
+
+
+
+      1				     ;//[]------------------------------------------------------------[]
+      2				     ;//|      C0.ASM -- Start Up Code for Am188es		       |
+      3				     ;//|							       |
+      4				     ;//|      -Roh Chang Hyun,	HandS Korea Univ.		       |
+      5				     ;//|							       |
+      6				     ;//[]------------------------------------------------------------[]
+      7
+      8						      locals
+      9	      =0001				      __C0__ = 1
+     10
+     11				     include  rules.asi
+1    12				     ;[]-----------------------------------------------------------------[]
+1    13				     ;|	     RULES.ASI	--  Rules & Structures for assembler		  |
+1    14				     ;|									  |
+1    15				     ;|	     C/C++ Run Time Library   Version 4.0			  |
+1    16				     ;|									  |
+1    17				     ;|	     Copyright (c) 1987, 1991 by Borland International Inc.	  |
+1    18				     ;|	     All Rights	Reserved.					  |
+1    19				     ;[]-----------------------------------------------------------------[]
+1    20
+1    21				     ;*** First	we begin with a	few of the major constants of C.
+1    22
+1    23	      =0000		     false   equ     0	     ; Beware !	 For incoming parameters, non-false = true.
+1    24	      =0001		     true    equ     1	     ; For results, we generate	the proper numbers.
+1    25
+1    26	      =-0001		     lesser  equ    -1	     ; Incoming, lesser	< 0
+1    27	      =0000		     equal   equ     0
+1    28	      =0001		     greater equ     1	     ; Incoming, greater > 0
+1    29
+Turbo Assembler	 Version 3.1	    03/17/01 23:14:08	    Page 2
+c0.ASM
+
+
+
+1    30					     PAGE
+1    31				     ;[]------------------------------------------------------------[]
+1    32				     ;|								     |
+1    33				     ;|	     Conditional Assembly Directives			     |
+1    34				     ;|								     |
+1    35				     ;[]------------------------------------------------------------[]
+1    36
+1    37				     ;memory model aliases, for	the convenience	of building the	library
+1    38
+1    39				     IFDEF	     __s__
+1    40				     __SMALL__	     equ     1
+1    41				     ENDIF
+1    42
+1    43				     IFDEF	     __c__
+1    44				     __COMPACT__     equ     1
+1    45				     ENDIF
+1    46
+1    47				     IFDEF	     __m__
+1    48				     __MEDIUM__	     equ     1
+1    49				     ENDIF
+1    50
+1    51				     IFDEF	     __l__
+1    52				     __LARGE__	     equ     1
+1    53				     ENDIF
+1    54
+1    55				     IFDEF	     __h__
+1    56				     __HUGE__	     equ     1
+1    57				     ENDIF
+1    58
+1    59				     IFNDEF __TINY__
+1    60					 IFNDEF	__SMALL__
+1    61					     IFNDEF __MEDIUM__
+1    62						 IFNDEF	__COMPACT__
+1    63						     IFNDEF __LARGE__
+1    64							 IFNDEF	__HUGE__
+1    65							     %OUT  You must supply a model symbol.
+1    66							     .ERR
+1    67							 ENDIF
+1    68						     ENDIF
+1    69						 ENDIF
+1    70					     ENDIF
+1    71					 ENDIF
+1    72				     ENDIF
+1    73
+1    74				     ;bit masks	to extract default pointer types from MMODEL (at run-time)
+1    75	      =8000		     FCODE	     equ     8000h
+1    76	      =4000		     FDATA	     equ     4000h
+1    77
+1    78				     IFDEF   __TINY__		     ; Small Code - Small Data
+1    79					     LPROG	     equ     false
+1    80					     LDATA	     equ     false
+1    81					     MMODEL	     equ     0
+1    82					     _DSSTACK_	     equ     <>
+1    83				     ENDIF
+1    84
+1    85				     IFDEF   __SMALL__		     ; Small Code - Small Data
+1    86					     LPROG	     equ     false
+Turbo Assembler	 Version 3.1	    03/17/01 23:14:08	    Page 3
+c0.ASM
+
+
+
+1    87					     LDATA	     equ     false
+1    88	      =0001			     MMODEL	     equ     1
+1    89	      =				     _DSSTACK_	     equ     <>
+1    90				     ENDIF
+1    91
+1    92				     IFDEF   __MEDIUM__		     ; Large Code - Small Data
+1    93					     LPROG	     equ     true
+1    94					     LDATA	     equ     false
+1    95					     MMODEL	     equ     FCODE+2
+1    96					     _DSSTACK_	     equ     <>
+1    97				     ENDIF
+1    98
+1    99				     IFDEF   __COMPACT__	     ; Small Code - Large Data
+1   100					     LPROG	     equ     false
+1   101					     LDATA	     equ     true
+1   102					     MMODEL	     equ     FDATA+3
+1   103				     ENDIF
+1   104
+1   105				     IFDEF   __LARGE__		     ; Large Code - Large Data
+1   106					     LPROG	     equ     true
+1   107					     LDATA	     equ     true
+1   108					     MMODEL	     equ     FCODE+FDATA+4
+1   109				     ENDIF
+1   110
+1   111				     IFDEF   __HUGE__		     ; Large Code - Large Data
+1   112					     LPROG	     equ     true
+1   113					     LDATA	     equ     true
+1   114					     MMODEL	     equ     FCODE+FDATA+5
+1   115				     ENDIF
+1   116
+1   117				     IF	     LPROG
+1   118					     DIST	     equ     FAR
+1   119				     ELSE
+1   120					     DIST	     equ     NEAR
+1   121				     ENDIF
+1   122
+Turbo Assembler	 Version 3.1	    03/17/01 23:14:08	    Page 4
+c0.ASM
+
+
+
+1   123					     PAGE
+1   124				     ;[]------------------------------------------------------------[]
+1   125				     ;|								     |
+1   126				     ;|	     Segment Declarations Macros			     |
+1   127				     ;|								     |
+1   128				     ;[]------------------------------------------------------------[]
+1   129
+1   130				     Code_Seg@	     MACRO	     ;;	Open a Code Segment
+1   131				     IFDEF __WINDOWS__
+1   132				     _TEXT   SEGMENT WORD PUBLIC 'CODE'
+1   133				     ELSE
+1   134				     _TEXT   SEGMENT BYTE PUBLIC 'CODE'
+1   135				     ENDIF
+1   136					     ASSUME  CS:_TEXT
+1   137						     ENDM
+1   138
+1   139				     Code_EndS@	     MACRO	     ;;	Close a	Code Segment
+1   140				     _TEXT   ENDS
+1   141						     ENDM
+1   142
+1   143				     Data_Seg@	     MACRO	     ;;	Open a Data Segment  (initialized)
+1   144				     _DATA   SEGMENT WORD PUBLIC 'DATA'
+1   145						     ENDM
+1   146
+1   147				     Data_EndS@	     MACRO	     ;;	Close a	Data Segment (initialized)
+1   148				     _DATA   ENDS
+1   149						     ENDM
+1   150
+1   151				     IFNDEF __HUGE__
+1   152					 BSS_Seg@	 MACRO	     ;;	Open a Data Segment  (un-initialized)
+1   153					 _BSS	 SEGMENT WORD PUBLIC 'BSS'
+1   154						 ENDM
+1   155
+1   156					 BSS_EndS@	 MACRO	     ;;	Close a	Data Segment (un-initialized)
+1   157					 _BSS	 ENDS
+1   158							 ENDM
+1   159				     ENDIF
+1   160
+1   161				     FarData_Seg@    MACRO	     ;;	Open a FAR Data	Segment
+1   162				     _FARDATA	     SEGMENT PARA PUBLIC 'FAR_DATA'
+1   163						     ENDM
+1   164
+1   165				     FarData_EndS@   MACRO	     ;;	Close a	FAR Data Segment
+1   166				     _FARDATA	     ENDS
+1   167						     ENDM
+1   168
+1   169				     FarBSS_Seg@     MACRO	     ;;	Open a FAR BSS Segment
+1   170				     _FARBSS	     SEGMENT PARA PUBLIC 'FAR_BSS'
+1   171						     ENDM
+1   172
+1   173				     FarBSS_EndS@    MACRO	     ;;	Close a	FAR BSS	Segment
+1   174				     _FARBSS	     ENDS
+1   175						     ENDM
+1   176
+1   177				     Const_Seg@	     MACRO	     ;;	Open a CONST Segment
+1   178				     _CONST  SEGMENT WORD PUBLIC 'CONST'
+1   179						     ENDM
+Turbo Assembler	 Version 3.1	    03/17/01 23:14:08	    Page 5
+c0.ASM
+
+
+
+1   180
+1   181				     Const_EndS@     MACRO	     ;;	Close a	CONST Segment
+1   182				     _CONST  ENDS
+1   183						     ENDM
+1   184
+1   185				     Init_Seg@	     MACRO	     ;;	Open a INIT Segment
+1   186				     _INIT_  SEGMENT WORD PUBLIC 'INITDATA'
+1   187						     ENDM
+1   188
+1   189				     Init_EndS@	     MACRO	     ;;	Close a	INIT Segment
+1   190				     _INIT_  ENDS
+1   191						     ENDM
+1   192
+1   193				     Exit_Seg@	     MACRO	     ;;	Open a EXIT Segment
+1   194				     _EXIT_  SEGMENT WORD PUBLIC 'EXITDATA'
+1   195						     ENDM
+1   196
+1   197				     Exit_EndS@	     MACRO	     ;;	Close a	EXIT Segment
+1   198				     _EXIT_  ENDS
+1   199						     ENDM
+1   200
+1   201				     CVT_Seg@	     MACRO
+1   202				     _CVTSEG SEGMENT WORD PUBLIC 'DATA'
+1   203						     ENDM
+1   204
+1   205				     CVT_EndS@	     MACRO
+1   206				     _CVTSEG ENDS
+1   207						     ENDM
+1   208
+1   209				     SCN_Seg@	     MACRO
+1   210				     _SCNSEG SEGMENT WORD PUBLIC 'DATA'
+1   211						     ENDM
+1   212
+1   213				     SCN_EndS@	     MACRO
+1   214				     _SCNSEG ENDS
+1   215						     ENDM
+1   216
+1   217				     Header@ MACRO
+1   218				     Code_Seg@
+1   219				     Code_EndS@
+1   220				     Data_Seg@
+1   221				     Data_EndS@
+1   222				     BSS_Seg@
+1   223				     BSS_EndS@
+1   224					     ASSUME  CS:_TEXT, DS:DGROUP
+1   225					     ENDM
+1   226
+1   227				     ;[]------------------------------------------------------------[]
+1   228				     ;|								     |
+1   229				     ;|	     Segment Definitions				     |
+1   230				     ;|								     |
+1   231				     ;[]------------------------------------------------------------[]
+1   232
+1   233				     IFDEF __C0__
+1   234
+1   235				     IFDEF __WINDOWS__
+1   236				     _TEXT	     SEGMENT WORD PUBLIC 'CODE'
+Turbo Assembler	 Version 3.1	    03/17/01 23:14:08	    Page 6
+c0.ASM
+
+
+
+1   237						     ENDS
+1   238				     ELSE
+1   239	0000			     _TEXT	     SEGMENT BYTE PUBLIC 'CODE'
+1   240	0000					     ENDS
+1   241				     ENDIF
+1   242
+1   243	0000			     _FARDATA	     SEGMENT PARA PUBLIC 'FAR_DATA'
+1   244	0000					     ENDS
+1   245
+1   246	0000			     _FARBSS	     SEGMENT PARA PUBLIC 'FAR_BSS'
+1   247	0000					     ENDS
+1   248
+1   249				     IFNDEF __WINDOWS__
+1   250				       IFNDEF __TINY__
+1   251	0000			       _OVERLAY_       SEGMENT PARA PUBLIC 'OVRINFO'
+1   252	0000					       ENDS
+1   253	0000			       _1STUB_	       SEGMENT PARA PUBLIC 'STUBSEG'
+1   254	0000					       ENDS
+1   255				       ENDIF
+1   256				     ENDIF
+1   257
+1   258				     IFDEF __WINDOWS__
+1   259				     NULL	     SEGMENT PARA PUBLIC 'BEGDATA'
+1   260						     ENDS
+1   261				     ENDIF
+1   262
+1   263	0000			     _DATA	     SEGMENT PARA PUBLIC 'DATA'
+1   264	0000					     ENDS
+1   265						     ENDS
+1   266
+1   267	0000			     _CONST	     SEGMENT WORD PUBLIC 'CONST'
+1   268	0000					     ENDS
+1   269
+1   270				     IFDEF __WINDOWS__
+1   271				     _FPSEG	     SEGMENT WORD PUBLIC 'DATA'
+1   272						     ENDS
+1   273				     ENDIF
+1   274
+1   275	0000			     _CVTSEG	     SEGMENT WORD PUBLIC 'DATA'
+1   276	0000					     ENDS
+1   277
+1   278	0000			     _SCNSEG	     SEGMENT WORD PUBLIC 'DATA'
+1   279	0000					     ENDS
+1   280
+1   281	0000			     _INIT_	     SEGMENT WORD PUBLIC 'INITDATA'
+1   282	0000			     InitStart	     label byte
+1   283	0000					     ENDS
+1   284	0000			     _INITEND_	     SEGMENT BYTE PUBLIC 'INITDATA'
+1   285	0000			     InitEnd	     label byte
+1   286	0000					     ENDS
+1   287
+1   288	0000			     _EXIT_	     SEGMENT WORD PUBLIC 'EXITDATA'
+1   289	0000			     ExitStart	     label byte
+1   290	0000					     ENDS
+1   291	0000			     _EXITEND_	     SEGMENT BYTE PUBLIC 'EXITDATA'
+1   292	0000			     ExitEnd	     label byte
+1   293	0000					     ENDS
+Turbo Assembler	 Version 3.1	    03/17/01 23:14:08	    Page 7
+c0.ASM
+
+
+
+1   294
+1   295				     IFNDEF __HUGE__
+1   296	0000			     _BSS	   SEGMENT WORD	PUBLIC 'BSS'
+1   297	0000			     BeginBSS	   label byte
+1   298	0000					   ENDS
+1   299	0000			     _BSSEND	   SEGMENT BYTE	PUBLIC 'BSSEND'
+1   300	0000			     EndBSS	   label byte
+1   301	0000					   ENDS
+1   302				     ENDIF
+1   303
+1   304
+1   305				     IFDEF __WINDOWS__
+1   306
+1   307				       IFDEF  __HUGE__
+1   308				       DGROUP GROUP NULL,_DATA,_CONST,_FPSEG,_CVTSEG,_SCNSEG,_INIT_,_INITEND_,_EXIT_,_EXITEND_
+1   309				       ELSE
+1   310				       DGROUP GROUP NULL,_DATA,_CONST,_FPSEG,_CVTSEG,_SCNSEG,_INIT_,_INITEND_,_EXIT_,_EXITEND_,_BSS,+
+    311				     _BSSEND
+1   312				       ENDIF
+1   313
+1   314				     ELSE
+1   315
+1   316				     IFNDEF __NOFLOAT__
+1   317				       IF LDATA
+1   318					 IFDEF	__HUGE__
+1   319					   DGROUP GROUP	_DATA,_CONST,_CVTSEG,_SCNSEG,_INIT_,_INITEND_,_EXIT_,_EXITEND_
+1   320					 ELSE
+1   321					   DGROUP GROUP	_DATA,_CONST,_CVTSEG,_SCNSEG,_INIT_,_INITEND_,_EXIT_,_EXITEND_,_BSS,_BSSEND
+1   322					 ENDIF
+1   323				       ELSE
+1   324					 IFDEF __TINY__
+1   325					   DGROUP GROUP	_TEXT,_DATA,_CONST,_CVTSEG,_SCNSEG,_INIT_,_INITEND_,_EXIT_,_EXITEND_,_BSS,  +
+    326				     _BSSEND
+1   327					 ELSE
+1   328					   DGROUP GROUP	_DATA,_CONST,_CVTSEG,_SCNSEG,_INIT_,_INITEND_,_EXIT_,_EXITEND_,_BSS,_BSSEND
+1   329					 ENDIF
+1   330				       ENDIF
+1   331				     ELSE
+1   332				       IF LDATA
+1   333					 IFDEF __HUGE__
+1   334					   DGROUP GROUP	_DATA,_CONST,_CVTSEG,_SCNSEG,_INIT_,_INITEND_,_EXIT_,_EXITEND_
+1   335					 ELSE
+1   336					   DGROUP GROUP	_DATA,_CONST,_CVTSEG,_SCNSEG,_BSS,_BSSEND
+1   337					 ENDIF
+1   338				       ELSE
+1   339					 IFDEF __TINY__
+1   340					   DGROUP GROUP	_TEXT,_DATA,_CONST,_CVTSEG,_SCNSEG,_INIT_,_INITEND_,_EXIT_,_EXITEND_,_BSS,  +
+    341				     _BSSEND
+1   342					 ELSE
+1   343					   DGROUP GROUP	_DATA,_CONST,_CVTSEG,_SCNSEG,_INIT_,_INITEND_,_EXIT_,_EXITEND_,_BSS,_BSSEND
+1   344					 ENDIF
+1   345				       ENDIF
+1   346				     ENDIF ; __NOFLOAT__
+1   347
+1   348				     ENDIF ; __WINDOWS__
+1   349
+1   350				     ELSE
+Turbo Assembler	 Version 3.1	    03/17/01 23:14:08	    Page 8
+c0.ASM
+
+
+
+1   351
+1   352				     Code_Seg@
+1   353				     Code_EndS@
+1   354				     Data_Seg@
+1   355				     Data_EndS@
+1   356				     DGROUP GROUP _DATA
+1   357
+1   358				     ENDIF ; __C0__
+1   359
+Turbo Assembler	 Version 3.1	    03/17/01 23:14:08	    Page 9
+c0.ASM
+
+
+
+1   360					     PAGE
+1   361				     ;[]------------------------------------------------------------[]
+1   362				     ;|								     |
+1   363				     ;|	     Old Segment Declarations Macros			     |
+1   364				     ;|								     |
+1   365				     ;[]------------------------------------------------------------[]
+1   366
+1   367
+1   368				     CSeg@	     MACRO	     ;;	Open a Code Segment
+1   369				     IFDEF __WINDOWS__
+1   370				     _TEXT   SEGMENT WORD PUBLIC 'CODE'
+1   371				     ELSE
+1   372				     _TEXT   SEGMENT BYTE PUBLIC 'CODE'
+1   373				     ENDIF
+1   374					     ASSUME  CS:_TEXT
+1   375						     ENDM
+1   376
+1   377				     CSegEnd@	     MACRO	     ;;	Close a	Code Segment
+1   378				     _TEXT   ENDS
+1   379						     ENDM
+1   380
+1   381				     DSeg@	     MACRO	     ;;	Open a Data Segment  (initialized)
+1   382				     _DATA   SEGMENT WORD PUBLIC 'DATA'
+1   383						     ENDM
+1   384
+1   385				     DSegEnd@	     MACRO	     ;;	Close a	Data Segment (initialized)
+1   386				     _DATA   ENDS
+1   387						     ENDM
+1   388
+1   389				     IFDEF __BSS__
+1   390					 IFNDEF	__HUGE__
+1   391					     BSeg@	     MACRO	     ;;	Open a Data Segment  (un-initialized)
+1   392					     _BSS    SEGMENT WORD PUBLIC 'BSS'
+1   393						     ENDM
+1   394
+1   395					     BSegEnd@	     MACRO	     ;;	Close a	Data Segment (un-initialized)
+1   396					     _BSS    ENDS
+1   397							     ENDM
+1   398					 ENDIF
+1   399				     ENDIF
+1   400
+1   401				     Header@ MACRO
+1   402				     IFDEF __WINDOWS__
+1   403				     _TEXT   SEGMENT WORD PUBLIC 'CODE'
+1   404				     ELSE
+1   405				     _TEXT   SEGMENT BYTE PUBLIC 'CODE'
+1   406				     ENDIF
+1   407				     _TEXT   ENDS
+1   408				     _DATA   SEGMENT WORD PUBLIC 'DATA'
+1   409				     _DATA   ENDS
+1   410				     IFDEF __BSS__
+1   411					 IFNDEF	 __HUGE__
+1   412					     _BSS    SEGMENT WORD PUBLIC 'BSS'
+1   413					     _BSS    ENDS
+1   414					 ENDIF
+1   415				     ENDIF
+1   416
+Turbo Assembler	 Version 3.1	    03/17/01 23:14:08	    Page 10
+c0.ASM
+
+
+
+1   417					     ASSUME  CS:_TEXT, DS:DGROUP
+1   418					     ENDM
+1   419
+Turbo Assembler	 Version 3.1	    03/17/01 23:14:08	    Page 11
+c0.ASM
+
+
+
+1   420					     PAGE
+1   421				     ;[]------------------------------------------------------------[]
+1   422				     ;|								     |
+1   423				     ;|	     C Naming Convention Macros				     |
+1   424				     ;|								     |
+1   425				     ;[]------------------------------------------------------------[]
+1   426
+1   427	      =0001		     UNDERSCORE	     EQU     1
+1   428
+1   429				     ExtSym@ MACRO   Sym, sType, sName
+1   430					     IFNB    <sName>
+1   431					     IFIDN   <sName>, <__PASCAL__>
+1   432				     NAMING	 =	 0
+1   433					     ELSE
+1   434				     NAMING	 =	 UNDERSCORE
+1   435					     ENDIF
+1   436					     ENDIF
+1   437					     IF	     NAMING
+1   438					     EXTRN   _&Sym : sType
+1   439				     Sym&@   equ     _&Sym
+1   440					     ELSE
+1   441					     EXTRN   Sym : sType
+1   442				     Sym&@   equ     Sym
+1   443					     ENDIF
+1   444					     ENDM
+1   445
+1   446				     PubSym@ MACRO   Sym, Definition, sName
+1   447					     IFNB    <sName>
+1   448					     IFIDN   <sName>, <__PASCAL__>
+1   449				     NAMING	 =	 0
+1   450					     ELSE
+1   451				     NAMING	 =	 UNDERSCORE
+1   452					     ENDIF
+1   453					     ENDIF
+1   454					     IF	     NAMING
+1   455					     PUBLIC  _&Sym
+1   456				     _&Sym   Definition
+1   457				     Sym&@   equ     _&Sym
+1   458					     ELSE
+1   459					     PUBLIC  Sym
+1   460				     Sym     Definition
+1   461				     Sym&@   equ     Sym
+1   462					     ENDIF
+1   463					     ENDM
+1   464
+1   465				     Static@ MACRO   Sym, Definition, sName
+1   466					     IFNB    <sName>
+1   467					     IFIDN   <sName>, <__PASCAL__>
+1   468				     NAMING	 =	 0
+1   469					     ELSE
+1   470				     NAMING	 =	 UNDERSCORE
+1   471					     ENDIF
+1   472					     ENDIF
+1   473					     IF	     NAMING
+1   474				     _&Sym   Definition
+1   475				     Sym&@   equ     _&Sym
+1   476					     ELSE
+Turbo Assembler	 Version 3.1	    03/17/01 23:14:08	    Page 12
+c0.ASM
+
+
+
+1   477				     Sym     Definition
+1   478				     Sym&@   equ     Sym
+1   479					     ENDIF
+1   480					     ENDM
+1   481
+Turbo Assembler	 Version 3.1	    03/17/01 23:14:08	    Page 13
+c0.ASM
+
+
+
+1   482					     PAGE
+1   483				     ;[]------------------------------------------------------------[]
+1   484				     ;|								     |
+1   485				     ;|	     Macros which are Data Size	Dependent		     |
+1   486				     ;|								     |
+1   487				     ;[]------------------------------------------------------------[]
+1   488
+1   489				     IF	     LDATA
+1   490				     DPTR_	     equ     DWORD PTR
+1   491				     dPtrSize	     equ     4
+1   492				     LES_	     equ     LES
+1   493				     ES_	     equ     ES:
+1   494				     SS_	     equ     SS:
+1   495				     LDS_	     equ     LDS
+1   496
+1   497				     pushDS_	     MACRO
+1   498						     PUSH    DS
+1   499						     ENDM
+1   500
+1   501				     popDS_	     MACRO
+1   502						     POP    DS
+1   503						     ENDM
+1   504
+1   505				     PushPtr	     MACRO   dPtrOff, dPtrSeg
+1   506						     PUSH    dPtrSeg
+1   507						     PUSH    dPtrOff
+1   508						     ENDM
+1   509
+1   510
+1   511				     dPtr@	     MACRO   Sym, VALUE, sName	     ;;	Static Data pointer
+1   512				     Static@	     Sym, <DD	     VALUE>, sName
+1   513						     ENDM
+1   514
+1   515				     dPtrPub@	     MACRO   Sym, VALUE, sName	     ;;	Global Data Pointer
+1   516				     PubSym@	     Sym, <DD	     VALUE>, sName
+1   517						     ENDM
+1   518
+1   519				     dPtrExt@	     MACRO   Sym, sName	     ;;	External Data Pointer
+1   520				     ExtSym@	     Sym, DWORD, sName
+1   521						     ENDM
+1   522				     ELSE
+1   523	      =	WORD PTR	     DPTR_	     equ     WORD PTR
+1   524	      =0002		     dPtrSize	     equ     2
+1   525				     LES_	     equ     MOV
+1   526	      =	DS:		     ES_	     equ     DS:
+1   527	      =	DS:		     SS_	     equ     DS:
+1   528				     LDS_	     equ     MOV
+1   529
+1   530				     pushDS_	     MACRO
+1   531						     ENDM
+1   532
+1   533				     popDS_	     MACRO
+1   534						     ENDM
+1   535
+1   536				     PushPtr	     MACRO   dPtrOff, dPtrSeg
+1   537						     PUSH    dPtrOff
+1   538						     ENDM
+Turbo Assembler	 Version 3.1	    03/17/01 23:14:08	    Page 14
+c0.ASM
+
+
+
+1   539
+1   540				     dPtr@	     MACRO   Sym, VALUE, sName	     ;;	Static Data pointer
+1   541				     Static@	     Sym, <DW	     VALUE>, sName
+1   542						     ENDM
+1   543
+1   544				     dPtrPub@	     MACRO   Sym, VALUE, sName	     ;;	Global Data Pointer
+1   545				     PubSym@	     Sym, <DW	     VALUE>, sName
+1   546						     ENDM
+1   547
+1   548				     dPtrExt@	     MACRO   Sym, sName	     ;;	External Data Pointer
+1   549				     ExtSym@	     Sym, WORD,	sName
+1   550						     ENDM
+1   551				     ENDIF
+Turbo Assembler	 Version 3.1	    03/17/01 23:14:08	    Page 15
+c0.ASM
+
+
+
+1   552					     PAGE
+1   553				     ;[]------------------------------------------------------------[]
+1   554				     ;|								     |
+1   555				     ;|	     Macros which are Code Size	Dependent		     |
+1   556				     ;|								     |
+1   557				     ;[]------------------------------------------------------------[]
+1   558
+1   559				     IF	     LPROG
+1   560				     CPTR_	     equ     DWORD PTR
+1   561				     cPtrSize	     equ     4
+1   562
+1   563				     Proc@	     MACRO   Sym, sName	     ;;	Open a Static function
+1   564				     Static@	     Sym, <PROC	     FAR>, sName
+1   565						     ENDM
+1   566
+1   567				     PubProc@	     MACRO   Sym, sName	     ;;	Open a Public function
+1   568				     PubSym@	     Sym, <PROC	     FAR>, sName
+1   569						     ENDM
+1   570
+1   571				     ExtProc@	     MACRO   Sym, sName	     ;;	External Function
+1   572				     ExtSym@	     Sym, FAR, sName
+1   573						     ENDM
+1   574
+1   575				     cPtr@	     MACRO   Sym, VALUE, sName	     ;;	Static Function	pointer
+1   576				     Static@	     Sym, <DD	     VALUE>, sName
+1   577						     ENDM
+1   578
+1   579				     cPtrPub@	     MACRO   Sym, VALUE, sName;; Global	Function Pointer
+1   580				     PubSym@	     Sym, <DD	     VALUE>, sName
+1   581						     ENDM
+1   582
+1   583				     cPtrExt@	     MACRO   Sym, sName	     ;;	External Function Pointer
+1   584				     ExtSym@	     Sym, DWORD, sName
+1   585						     ENDM
+1   586				     ELSE
+1   587	      =	WORD PTR	     CPTR_	     equ     WORD PTR
+1   588	      =0002		     cPtrSize	     equ     2
+1   589
+1   590				     Proc@	     MACRO   Sym, sName	     ;;	Open a Static function
+1   591				     Static@	     Sym, <PROC	     NEAR>, sName
+1   592						     ENDM
+1   593
+1   594				     PubProc@	     MACRO   Sym, sName	     ;;	Open a Public function
+1   595				     PubSym@	     Sym, <PROC	     NEAR>, sName
+1   596						     ENDM
+1   597
+1   598				     ExtProc@	     MACRO   Sym, sName	     ;;	External Function
+1   599				     ExtSym@	     Sym, NEAR,	sName
+1   600						     ENDM
+1   601
+1   602				     cPtr@	     MACRO   Sym, VALUE, sName	     ;;	Static Function	pointer
+1   603				     Static@	     Sym, <DW	     VALUE>, sName
+1   604						     ENDM
+1   605
+1   606				     cPtrPub@	     MACRO   Sym, VALUE, sName	     ;;	Global Function	Pointer
+1   607				     PubSym@	     Sym, <DW	     VALUE>, sName
+1   608						     ENDM
+Turbo Assembler	 Version 3.1	    03/17/01 23:14:08	    Page 16
+c0.ASM
+
+
+
+1   609
+1   610				     cPtrExt@	     MACRO   Sym, sName	     ;;	External Function Pointer
+1   611				     ExtSym@	     Sym, WORD,	sName
+1   612						     ENDM
+1   613				     ENDIF
+1   614
+1   615				     EndProc@	     MACRO   Sym, sName	     ;;	Close a	function
+1   616				     Static@	     Sym, ENDP,	sName
+1   617						     ENDM
+1   618
+Turbo Assembler	 Version 3.1	    03/17/01 23:14:08	    Page 17
+c0.ASM
+
+
+
+1   619					     PAGE
+1   620				     ;[]------------------------------------------------------------[]
+1   621				     ;|								     |
+1   622				     ;|	     Miscellaneous Definitions				     |
+1   623				     ;|								     |
+1   624				     ;[]------------------------------------------------------------[]
+1   625
+1   626				     ;*** Set up some macros for procedure parameters and export/import
+1   627
+1   628	*000			     nearCall	     STRUC
+1   629	*000  01*(????)		     nearBP	     dw	     ?
+1   630	*002  01*(????)		     nearIP	     dw	     ?
+1   631	*004  01*(????)		     nearParam	     dw	     ?
+1   632	*006			     nearCall	     ENDS
+1   633
+1   634	*000			     farCall	     STRUC
+1   635	*000  01*(????)		     farBP	     dw	     ?
+1   636	*002  01*(????????)	     farCSIP	     dd	     ?
+1   637	*006  01*(????)		     aParam	     dw	     ?
+1   638	*008			     farCall	     ENDS
+1   639
+1   640				     ;*** Next,	we define some convenient structures to	access the parts
+1   641				     ;	     of	larger objects.
+1   642
+1   643	*000			     _twoBytes	     STRUC
+1   644	*000  01*(??)		     BY0     db	     ?
+1   645	*001  01*(??)		     BY1     db	     ?
+1   646	*002			     _twoBytes	     ENDS
+1   647
+1   648	*000			     _fourWords	     STRUC
+1   649	*000  01*(????)		     W0	     dw	     ?
+1   650	*002  01*(????)		     W1	     dw	     ?
+1   651	*004  01*(????)		     W2	     dw	     ?
+1   652	*006  01*(????)		     W3	     dw	     ?
+1   653	*008			     _fourWords	     ENDS
+1   654
+1   655	*000			     _twoDwords	     STRUC
+1   656	*000  01*(????????)	     DD0     dd	     ?
+1   657	*004  01*(????????)	     DD1     dd	     ?
+1   658	*008			     _twoDwords	     ENDS
+1   659
+1   660	*000			     _aFloat	     STRUC
+1   661	*000  01*		  +  double	     dq	     ?
+    662	      (????????????????)
+1   663	*008			     _aFloat	     ENDS
+1   664
+1   665				     ; How to invoke MSDOS.
+1   666
+1   667				     MSDOS@  MACRO
+1   668					     int     21h
+1   669					     ENDM
+Turbo Assembler	 Version 3.1	    03/17/01 23:14:08	    Page 18
+c0.ASM
+
+
+
+1   670					     PAGE
+1   671
+1   672				     ; The next	section	concerns the use of registers.	SI and DI are used
+1   673				     ;	     for register variables, and must be conserved.
+1   674
+1   675				     ; Registers AX, BX, CX, DX	will not be preserved across function calls.
+1   676
+1   677				     ; Firstly,	the registers to be conserved through function calls, including
+1   678				     ;	     the setup of local	variables.
+1   679
+1   680				     link@   MACRO   _si,_di,_ES,locals
+1   681					     push    bp
+1   682					     mov     bp, sp
+1   683					     IFNB    <locals>
+1   684						     lea     sp, locals
+1   685					     ENDIF
+1   686					     IFNB    <_si>
+1   687						     push    si
+1   688					     ENDIF
+1   689					     IFNB    <_di>
+1   690						     push    di
+1   691					     ENDIF
+1   692				     ENDM
+1   693
+1   694				     unLink@ MACRO   _si,_di,_ES,locals
+1   695					     IFNB    <_di>
+1   696						     pop     di
+1   697					     ENDIF
+1   698					     IFNB    <_si>
+1   699						     pop     si
+1   700					     ENDIF
+1   701					     IFNB    <locals>
+1   702						     mov     sp, bp
+1   703					     ENDIF
+1   704					     pop     bp
+1   705				     ENDM
+1   706
+1   707				     .LIST
+1   708
+    709
+    710				     ;//[]------------------------------------------------------------[]
+    711				     ;//|     define						       |
+    712				     ;//[]------------------------------------------------------------[]
+    713
+    714	      =FFFE		     RAM_END  equ    0FFFEh
+    715	      =0000		     DATA_SEG equ    00000h
+    716
+    717				     ; by wizest
+    718	      =1000		     STACK_SEG	     equ 01000h
+    719	      =FFFE		     STACK_OFFSET    equ 0FFFEh
+    720
+    721				     ;//[]------------------------------------------------------------[]
+    722				     ;//|     segment declare					       |
+    723				     ;//[]------------------------------------------------------------[]
+    724
+    725	0000			     _text    segment byte public 'code'
+    726	0000					      ends
+Turbo Assembler	 Version 3.1	    03/17/01 23:14:08	    Page 19
+c0.ASM
+
+
+
+    727
+    728	0000			     _DATA    segment para public 'data'
+    729	0000					      data@ label byte
+    730								      org 0080h
+    731	0080					      ends
+    732
+    733	0000			     _BSS     segment word public 'bss'
+    734	0000					      bdata@ label byte
+    735	0000					      ends
+    736
+    737				     ;//[]------------------------------------------------------------[]
+    738				     ;//|     code						       |
+    739				     ;//[]------------------------------------------------------------[]
+    740
+    741								     assume  cs:_text, ds:dgroup, ss: dgroup
+    742
+    743								     extrn    _main :dist
+    744
+    745	0000			     _text	     segment
+    746	0000			     startupproc     proc    near
+    747
+    748	0000			     begin:
+    749
+    750								     ;//disable	maskable interrupts
+    751
+    752	0000  FA						     cli
+    753
+    754								     ;//watch_dog_timer_disable
+    755
+    756	0001  BA FFE6						     mov    dx,	0FFE6h
+    757	0004  B8 3333						     mov    ax,	03333h
+    758	0007  EF						     out    dx,	ax
+    759	0008  B8 CCCC						     mov    ax,	0CCCCh
+    760	000B  EF						     out    dx,	ax
+    761	000C  B8 0000						     mov    ax,	00000h
+    762	000F  EF						     out    dx,	ax
+    763
+    764								     ;//set LMCS
+    765	0010  BA FFA2						     mov    dx,	0FFA2h
+    766	0013  ED						     in	    ax,	dx     ;activate LMCS
+    767
+    768													     ;0... 1111	..11 1...
+    769								     ;mov    ax, 0FBCh	     ;0000 1111	1011 1100 / 64K, 0-WAIT
+    770	0014  B8 1FBC						     mov     ax, 01FBCh	 ;128k
+    771	0017  EF						     out    dx,	ax
+    772
+    773								     ;//set UMCS
+    774	0018  BA FFA0						     mov    dx,	0FFA0h
+    775													     ;1... 0000	.011 1...
+    776								     ;mov    ax, 0F0BDh	     ;1111 0000	1011 1101 / 64K, 0-WAIT
+    777	001B  B8 E0BC						     mov     ax, 0E0BCh	     ;128k
+    778	001E  EF						     out    dx,	ax
+    779
+    780
+    781								     ;//ram data initialize by moving data from	rom
+    782
+    783	001F  BB 0000s						     mov    bx,	seg data@
+Turbo Assembler	 Version 3.1	    03/17/01 23:14:08	    Page 20
+c0.ASM
+
+
+
+    784	0022  8E DB						     mov    ds,	bx
+    785
+    786	0024  BA 0000						     mov    dx,	DATA_SEG
+    787	0027  8E C2						     mov    es,	dx
+    788
+    789	0029  33 F6						     xor    si,	si
+    790	002B  33 FF						     xor    di,	di
+    791
+    792	002D  B9 0000r						     mov    cx,	offset DGROUP:bdata@
+    793
+    794	0030  FC						     cld
+    795	0031  F3> A4						     rep    movsb
+    796
+    797								     ;//initialize stack pointer
+    798
+    799	0033  BA 1000						     mov	     dx, STACK_SEG
+    800	0036  8E D2						     mov     ss, dx
+    801	0038  BC FFFE						     mov     sp, STACK_OFFSET
+    802
+    803								     ;//call main()
+    804	003B  BA 0000						     mov     dx, DATA_SEG
+    805	003E  8E DA						     mov     ds, dx
+    806	0040  E8 0000e						     call    _main
+    807
+    808	0043  EB BB						     jmp     begin
+    809
+    810	0045			     startupproc	     endp
+    811	0045			     _text	     ends
+    812
+    813								     end
+Turbo Assembler	 Version 3.1	    03/17/01 23:14:08	    Page 21
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "03/17/01"
+??FILENAME			  Text	 "c0	  "
+??TIME				  Text	 "23:14:08"
+??VERSION			  Number 030A
+@CPU				  Text	 0101H
+@CURSEG				  Text	 _TEXT
+@FILENAME			  Text	 C0
+@WORDSIZE			  Text	 2
+BDATA@				  Byte	 _BSS:0000
+BEGIN				  Near	 _TEXT:0000
+BEGINBSS			  Byte	 _BSS:0000
+CPTRSIZE			  Number 0002
+CPTR_				  Text	 WORD PTR
+DATA@				  Byte	 _DATA:0000
+DATA_SEG			  Number 0000
+DIST				  Alias	 NEAR
+DPTRSIZE			  Number 0002
+DPTR_				  Text	 WORD PTR
+ENDBSS				  Byte	 _BSSEND:0000
+EQUAL				  Number 0000
+ES_				  Text	 DS:
+EXITEND				  Byte	 _EXITEND_:0000
+EXITSTART			  Byte	 _EXIT_:0000
+FALSE				  Number 0000
+FCODE				  Number 8000
+FDATA				  Number 4000
+GREATER				  Number 0001
+INITEND				  Byte	 _INITEND_:0000
+INITSTART			  Byte	 _INIT_:0000
+LDATA				  Alias	 FALSE
+LDS_				  Alias	 MOV
+LESSER				  Number -0001
+LES_				  Alias	 MOV
+LPROG				  Alias	 FALSE
+MMODEL				  Number 0001
+RAM_END				  Number FFFE
+SS_				  Text	 DS:
+STACK_OFFSET			  Number FFFE
+STACK_SEG			  Number 1000
+STARTUPPROC			  Near	 _TEXT:0000
+TRUE				  Number 0001
+UNDERSCORE			  Number 0001
+_DSSTACK_			  Text
+_MAIN (_main)			  Near	 ----:---- Extern
+__C0__				  Number 0001
+__SMALL__			  Text
+
+Macro Name
+
+BSS_ENDS@
+BSS_SEG@
+CODE_ENDS@
+CODE_SEG@
+CONST_ENDS@
+Turbo Assembler	 Version 3.1	    03/17/01 23:14:08	    Page 22
+Symbol Table
+
+
+
+CONST_SEG@
+CPTR@
+CPTREXT@
+CPTRPUB@
+CSEG@
+CSEGEND@
+CVT_ENDS@
+CVT_SEG@
+DATA_ENDS@
+DATA_SEG@
+DPTR@
+DPTREXT@
+DPTRPUB@
+DSEG@
+DSEGEND@
+ENDPROC@
+EXIT_ENDS@
+EXIT_SEG@
+EXTPROC@
+EXTSYM@
+FARBSS_ENDS@
+FARBSS_SEG@
+FARDATA_ENDS@
+FARDATA_SEG@
+HEADER@
+INIT_ENDS@
+INIT_SEG@
+LINK@
+MSDOS@
+POPDS_
+PROC@
+PUBPROC@
+PUBSYM@
+PUSHDS_
+PUSHPTR
+SCN_ENDS@
+SCN_SEG@
+STATIC@
+UNLINK@
+
+Structure Name			  Type	Offset
+
+FARCALL
+ FARBP				  Word	 0000
+ FARCSIP			  Dword	 0002
+ APARAM				  Word	 0006
+NEARCALL
+ NEARBP				  Word	 0000
+ NEARIP				  Word	 0002
+ NEARPARAM			  Word	 0004
+_AFLOAT
+ DOUBLE				  Qword	 0000
+_FOURWORDS
+ W0				  Word	 0000
+ W1				  Word	 0002
+ W2				  Word	 0004
+ W3				  Word	 0006
+Turbo Assembler	 Version 3.1	    03/17/01 23:14:08	    Page 23
+Symbol Table
+
+
+
+_TWOBYTES
+ BY0				  Byte	 0000
+ BY1				  Byte	 0001
+_TWODWORDS
+ DD0				  Dword	 0000
+ DD1				  Dword	 0004
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DGROUP				  Group
+  _BSS				  16  0000 Word	  Public  BSS
+  _BSSEND			  16  0000 Byte	  Public  BSSEND
+  _CONST			  16  0000 Word	  Public  CONST
+  _CVTSEG			  16  0000 Word	  Public  DATA
+  _DATA				  16  0080 Para	  Public  DATA
+  _EXITEND_			  16  0000 Byte	  Public  EXITDATA
+  _EXIT_			  16  0000 Word	  Public  EXITDATA
+  _INITEND_			  16  0000 Byte	  Public  INITDATA
+  _INIT_			  16  0000 Word	  Public  INITDATA
+  _SCNSEG			  16  0000 Word	  Public  DATA
+_1STUB_				  16  0000 Para	  Public  STUBSEG
+_FARBSS				  16  0000 Para	  Public  FAR_BSS
+_FARDATA			  16  0000 Para	  Public  FAR_DATA
+_OVERLAY_			  16  0000 Para	  Public  OVRINFO
+_TEXT				  16  0045 Byte	  Public  CODE
+

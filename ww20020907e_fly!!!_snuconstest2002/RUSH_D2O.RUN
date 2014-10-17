@@ -1,0 +1,47 @@
+void run_rush_D2O(int tDIR, int inSTP,int aSTP,int uSTP,int dPL,int dPR,int outSTP)
+{
+	set_tSPD();
+
+	reset_steps();	reset_spd_diff();	spd_ptr = INFO_iSPD_RUSH;
+	enable_adj();
+
+	// wait edge
+	while(1)	{
+		scan_level_D();
+		scan_edge();
+		//disable_adj();
+		adj_DF0a();	//adj_DF0();
+		if ( tDIR == L )	{
+			if ( edge_info_L45 == EDGE_DN ) {
+				edge_info_L45 = edge_info_R45 = EDGE_UNKNOWN;
+				goto END_WAIT_EDGE_D2O;
+			}
+		}
+		else /* if ( tDIR == R ) */	{
+			if ( edge_info_R45 == EDGE_DN ) {
+				edge_info_L45 = edge_info_R45 = EDGE_UNKNOWN;
+				goto END_WAIT_EDGE_D2O;
+			}
+		}
+		sync_step();
+	}
+	END_WAIT_EDGE_D2O:
+
+	disable_adj();
+	reset_steps();	while(inSTP > steps)	;//{adj_DF0();	sync_step();}
+	//disable_adj();
+	if 	( tDIR == L )		turn_left (INFO_iSPD_RUSH,aSTP,uSTP,dPL,dPR);
+	else /* (tDIR == R) */	turn_right(INFO_iSPD_RUSH,aSTP,uSTP,dPL,dPR);
+	reset_steps();
+	enable_adj();
+	refresh_level();
+	refresh_edge();
+	while(outSTP > steps)	{
+		scan_level();
+		scan_edge();
+		adj_O();
+		sync_step();
+	}
+
+	set_fSPD();
+}

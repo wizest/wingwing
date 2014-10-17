@@ -1,0 +1,594 @@
+void run_aSHF()
+{
+	#ifdef	DEBUG_SHOW_INFO
+		motor_stop();
+		wait_key();
+		show_maze();
+		show_path();
+		motor_start();
+	#endif
+
+	// update dir,pos
+	update_pos(F);
+
+	#define SHF_STP		(HALFBLK - 10)
+
+	//led_off(PIO_LED_ALL);
+	reset_steps();	reset_spd_ptr();	spd_diff = 1;
+	reset_adj_mul();
+	//enable_adj();
+
+	refresh_ss_history();
+	refresh_level();
+	refresh_edge();
+	while(CHKSTEP - HALFBLK > steps)	{
+		if ( spd_ptr_L >= INFO_iSPD_SCAN ) 	{spd_diff = 0; spd_ptr = INFO_iSPD_SCAN; }
+
+		/*
+		if ( edge_info_L90 == EDGE_DN || edge_info_R90 == EDGE_DN ) {
+			edge_info_L90 = edge_info_R90 = EDGE_UNKNOWN;
+			//led_off(PIO_LED_ALL);led_on(LED_SHOW_H);
+			steps = EDGESTEP_90-HALFBLK;
+		}
+		scan_level();
+		scan_edge();
+		*/
+
+		adj_O();
+		equal_spd_ptr();
+		sync_step();
+	}
+
+	// ALGOL
+	run_algol();
+
+	while(SHF_STP > steps)	{
+		if ( spd_ptr_L >= INFO_iSPD_SCAN ) {spd_ptr = INFO_iSPD_SCAN; spd_diff= 0;}
+
+		/*
+		if ( edge_info_L90 == EDGE_DN || edge_info_R90 == EDGE_DN ) {
+			edge_info_L90 = edge_info_R90 = EDGE_UNKNOWN;
+			//led_off(PIO_LED_ALL);led_on(LED_SHOW_H);
+			//steps = EDGESTEP_90-HALFBLK;
+		}
+		scan_level();
+		scan_edge();
+		*/
+
+		adj_O();
+		sync_step();
+	}
+	reset_spd_diff();
+
+	#ifndef DISABLE_OVERSTP
+	INFO_overSTP = steps - HALFBLK;
+	#endif
+}
+void run_aFHF()
+{
+	adj_pos_stop();
+
+	disable_adj();
+	motor_start();
+}
+void run_aTURN()
+{
+	motor_stop();
+	reset_steps();	reset_spd_ptr();	reset_spd_diff();
+	disable_adj();	reverse_L();
+
+	sys_delay(150);	motor_start();
+
+	reset_spd_ptr(); spd_diff = 1;		while ( tACCLSTP	       	> steps );
+	spd_diff = 0;	equal_spd_ptr();	while ( TURNSTP - tACCLSTP 	> steps );
+	spd_diff = -1;	                	while ( TURNSTP 	   		> steps );
+	spd_diff = 0;   reset_spd_ptr();
+
+	motor_stop();	sys_delay(150);
+	reverse_L();
+
+}
+void run_aSACCL()
+{
+//	set_fSPD();
+	motor_stop();
+
+	reset_steps();
+	reset_spd_ptr();
+	reset_spd_diff();
+
+//	enable_adj();
+	disable_adj();
+
+
+	reverse_LR();
+
+	#define INIT_SPD_PTR	0
+
+	#define	bSTP		50
+	#define SECTION1    5
+	#define SECTION2	10
+	#define SECTION3	15
+	#define	SECTION4	20
+	#define SECTION5	25
+	#define SECTION6	30
+	#define SECTION7	35
+	#define SECTION8	bSTP
+
+	#define DPTR1		1
+	#define DPTR2		1
+	#define DPTR3		1
+	#define DPTR4		1//2
+	#define DPTR5		1//2
+	#define DPTR6		2//2
+	#define DPTR7		2//3
+	#define DPTR8		2//3
+
+	spd_ptr = 1;
+	motor_start();
+	while(bSTP > steps);//	adj_O();
+	motor_stop();
+
+	sys_delay(100);	torque_off();
+	sys_delay(200);	torque_on();
+	sys_delay(300);
+
+//	enable_adj();
+
+	refresh_ss_history();
+	refresh_level();
+	refresh_edge();
+
+
+		level_P_L45	= level_C_L45
+	  = level_P_R45 = level_C_R45
+	  = level_P_L90 = level_C_L90
+	  = level_P_R90 = level_C_R90 = SS_HIGH;
+
+	reverse_LR();
+	reset_steps();
+	reset_spd_diff();
+	reset_spd_ptr();
+	spd_ptr = INIT_SPD_PTR;
+
+	motor_start();
+
+	spd_diff = DPTR1;
+	while( SECTION1 > steps)	{
+		if ( spd_ptr_L >= INFO_iSPD_RUSH ) 	{
+			spd_diff = 0;
+			spd_ptr	 = INFO_iSPD_RUSH;
+		}
+		scan_level();
+		scan_edge();
+		adj_O();
+		equal_spd_ptr();
+		sync_step();
+	}
+
+	enable_adj();	// CAUTION!!
+
+	spd_diff = DPTR2;
+	while( SECTION2 > steps)	{
+		if ( spd_ptr_L >= INFO_iSPD_RUSH ) 	{
+			spd_diff = 0;
+			spd_ptr	 = INFO_iSPD_RUSH;
+		}
+		scan_level();
+		scan_edge();
+		adj_O();
+		equal_spd_ptr();
+		sync_step();
+	}
+	spd_diff = DPTR3;
+	while( SECTION3 > steps)	{
+		if ( spd_ptr_L >= INFO_iSPD_RUSH ) 	{
+			spd_diff = 0;
+			spd_ptr	 = INFO_iSPD_RUSH;
+		}
+		scan_level();
+		scan_edge();
+		adj_O();
+		equal_spd_ptr();
+		sync_step();
+	}
+	spd_diff = DPTR4;
+	while( SECTION4 > steps)	{
+		if ( spd_ptr_L >= INFO_iSPD_RUSH ) 	{
+			spd_diff = 0;
+			spd_ptr	 = INFO_iSPD_RUSH;
+		}
+		scan_level();
+		scan_edge();
+		adj_O();
+		equal_spd_ptr();
+		sync_step();
+	}
+	spd_diff = DPTR5;
+	while( SECTION5 > steps)	{
+		if ( spd_ptr_L >= INFO_iSPD_RUSH ) 	{
+			spd_diff = 0;
+			spd_ptr	 = INFO_iSPD_RUSH;
+		}
+		scan_level();
+		scan_edge();
+		adj_O();
+		equal_spd_ptr();
+		sync_step();
+	}
+	spd_diff = DPTR6;
+	while( SECTION6 > steps)	{
+		if ( spd_ptr_L >= INFO_iSPD_RUSH ) 	{
+			spd_diff = 0;
+			spd_ptr	 = INFO_iSPD_RUSH;
+		}
+		scan_level();
+		scan_edge();
+		adj_O();
+		equal_spd_ptr();
+		sync_step();
+	}
+	spd_diff = DPTR7;
+	while( SECTION7 > steps)	{
+		if ( spd_ptr_L >= INFO_iSPD_RUSH ) 	{
+			spd_diff = 0;
+			spd_ptr	 = INFO_iSPD_RUSH;
+		}
+		scan_level();
+		scan_edge();
+		adj_O();
+		equal_spd_ptr();
+		sync_step();
+	}
+	spd_diff = DPTR8;
+	while( SECTION8 > steps)	{
+		if ( spd_ptr_L >= INFO_iSPD_RUSH ) 	{
+			spd_diff = 0;
+			spd_ptr	 = INFO_iSPD_RUSH;
+		}
+		scan_level();
+		scan_edge();
+		adj_O();
+		equal_spd_ptr();
+		sync_step();
+	}
+
+	enable_adj();
+
+	spd_diff = 0;
+
+	reset_spd_diff();
+	spd_ptr	= INFO_iSPD_RUSH;
+}
+void run_aCHF()			// Connecting HALFBLK
+{
+	eyes_off();
+	reset_steps();	spd_diff = -2;
+
+	enable_adj();
+
+	#define THRS_chkSTEP	120//70
+	#define THRS_maxSTEP	(ONEBLK+HALFBLK)
+
+	while(steps < THRS_chkSTEP)	{
+		if ( spd_ptr_L <= INFO_iSPD_SCAN )	{
+			spd_diff	= 0;
+			spd_ptr		= INFO_iSPD_SCAN;
+		}
+		adj_O();
+		equal_spd_ptr();
+		sync_step();
+	}
+	refresh_level();
+	refresh_edge();
+	while(steps < THRS_maxSTEP)	{
+
+		if ( spd_ptr_L <= INFO_iSPD_SCAN )	{
+			spd_diff	= 0;
+			spd_ptr		= INFO_iSPD_SCAN;
+		}
+		if ( edge_info_L90 == EDGE_DN ||
+			 edge_info_R90 == EDGE_DN ) 	goto REMAIN_STEP_aCHF;
+		scan_level();
+		scan_edge();
+		adj_O();
+		equal_spd_ptr();
+		sync_step();
+	}
+	goto END_aCHF;
+
+	REMAIN_STEP_aCHF:
+	reset_steps();
+	//while( steps < ONEBLK - EDGESTEP_90_SLOW )	{
+	while( steps < ONEBLK - EDGESTEP_90 )	{
+		if ( spd_ptr_L <= INFO_iSPD_SCAN )	{
+			spd_diff	= 0;
+			spd_ptr		= INFO_iSPD_SCAN;
+		}
+		adj_O();
+		sync_step();
+	}
+
+	// for debug
+	//motor_stop();	wait_key();	motor_start();
+
+	END_aCHF:
+	spd_diff	= 0;
+	spd_ptr		= INFO_iSPD_SCAN;
+
+	#ifndef DISABLE_OVERSTP
+	INFO_overSTP	= 0;
+	#endif
+	eyes_on();
+}
+
+void run_aSFF()
+{
+	motor_stop();
+	reset_steps();
+	reset_spd_ptr();
+	spd_diff = 1;
+	disable_adj();
+	motor_start();
+
+	#define NADJ_STP_SFF	40
+
+	while( NADJ_STP_SFF > steps ) equal_spd_ptr();
+	enable_adj();
+
+	reset_spd_diff();
+	equal_spd_ptr();
+
+	run_rush_FF();
+}
+void run_aSFRL()
+{
+//	set_fSPD();
+	// update dir,pos
+	update_pos(F);	update_pos(R);
+
+	get_run();	// Waste one RUN! (diagonal one block)
+
+	motor_stop();
+	reset_steps();
+	reset_spd_ptr();
+	reset_spd_diff();
+	disable_adj();
+	reverse_LR();
+	motor_start();
+
+	#define bSTP_aSFRL	60
+	#define NADJ_STP	40
+
+	while(bSTP_aSFRL > steps);
+	motor_stop();
+
+	sys_delay(200);	torque_off();
+	sys_delay(200);	torque_on();
+	sys_delay(300);
+
+	reverse_LR();
+	reset_steps();
+
+	reset_spd_ptr();
+
+	spd_diff = 1;
+	motor_start();
+
+	while( NADJ_STP > steps)
+	{
+		equal_spd_ptr();
+		sync_step();
+	}
+	spd_diff = 2;
+
+	// TURN
+	set_tSPD();
+	enable_adj();
+
+	reset_steps();
+	while(INFO_aSFRL_inSTP > steps)	{
+		adj_O();
+		if ( spd_ptr_L > INFO_iSPD_SRUSH )	{
+			spd_diff = 0;
+			spd_ptr = INFO_iSPD_SRUSH;
+		}
+		equal_spd_ptr();
+		sync_step();
+	}
+	disable_adj();
+	turn_right(	INFO_iSPD_SRUSH,
+				INFO_aSFRL_aSTP,
+				INFO_aSFRL_uSTP,
+				INFO_aSFRL_dPL,
+				INFO_aSFRL_dPR);
+
+	reset_steps();
+	enable_adj();
+	refresh_level_D();
+	refresh_edge();
+
+	set_fSPD();
+	// End of TURN
+
+	reset_steps();
+	spd_diff	= 2;
+
+	while(1)	{
+		scan_level_D();
+		scan_edge();
+		adj_DF0();
+		if ( spd_ptr_L >= INFO_iSPD_RUSH)	break;
+		equal_spd_ptr();
+		sync_step();
+	}
+	reset_spd_diff();	spd_ptr	= INFO_iSPD_RUSH;
+}
+void run_aSFRF()
+{
+//	set_fSPD();
+	// update dir,pos
+	update_pos(F);	update_pos(R);
+
+	motor_stop();
+	reset_steps();
+	reset_spd_ptr();
+	reset_spd_diff();
+	disable_adj();
+	reverse_LR();
+	motor_start();
+
+	#define bSTP_aSFRL	60
+	#define NADJ_STP	40
+
+	while(bSTP_aSFRL > steps) ;
+	motor_stop();
+
+	sys_delay(200);	torque_off();
+	sys_delay(200);	torque_on();
+	sys_delay(300);
+
+	reverse_LR();
+	reset_steps();
+
+	reset_spd_ptr();
+
+	spd_diff = 1;
+	motor_start();
+
+	while( NADJ_STP > steps)
+	{
+		equal_spd_ptr();
+		sync_step();
+	}
+//	spd_diff = 2;
+
+	// TURN
+	set_tSPD();
+
+	enable_adj();
+	reset_steps();
+
+	while(INFO_aSFRF_inSTP > steps)	{
+		adj_O();
+		if ( spd_ptr_L > INFO_iSPD_SRUSH )	{
+			spd_diff = 0;
+			spd_ptr = INFO_iSPD_SRUSH;
+		}
+		equal_spd_ptr();
+		sync_step();
+	}
+	disable_adj();
+	turn_right(	INFO_iSPD_SRUSH,
+				INFO_aSFRF_aSTP,
+				INFO_aSFRF_uSTP,
+				INFO_aSFRF_dPL,
+				INFO_aSFRF_dPR);
+
+	reset_steps();
+	enable_adj();
+	refresh_level();
+	refresh_edge();
+
+	set_fSPD();
+	// End of TURN
+
+	reset_steps();
+	enable_adj();
+
+	spd_diff	= 2;
+	while(1)	{
+		scan_level();
+		scan_edge();
+		adj_O();
+		if ( spd_ptr_L >= INFO_iSPD_RUSH)	break;
+		equal_spd_ptr();
+		sync_step();
+	}
+	reset_spd_diff();	spd_ptr	= INFO_iSPD_RUSH;
+}
+void run_aSFRRL()
+{
+//	set_fSPD();
+	// update dir,pos
+	update_pos(F);	update_pos(R);	update_pos(R);
+
+	get_run();	// Waste one RUN!	(diagonal one block)
+
+	motor_stop();
+	reset_steps();
+	reset_spd_ptr();
+	reset_spd_diff();
+	disable_adj();
+	reverse_LR();
+	motor_start();
+
+	#define bSTP_aSFRL	60
+	#define NADJ_STP	40
+
+	while(bSTP_aSFRL > steps);
+	motor_stop();
+
+	sys_delay(200);	torque_off();
+	sys_delay(200);	torque_on();
+	sys_delay(300);
+
+	reverse_LR();
+	reset_steps();
+
+	reset_spd_ptr();
+
+	spd_diff = 1;
+	motor_start();
+
+	while( NADJ_STP > steps)
+	{
+		equal_spd_ptr();
+		sync_step();
+	}
+//	spd_diff = 2;
+
+	// TURN
+	set_tSPD();
+	enable_adj();
+
+	reset_steps();
+	while(INFO_aSFRRL_inSTP > steps)	{
+		adj_O();
+		if ( spd_ptr_L > INFO_iSPD_SRUSH )	{
+			spd_diff = 0;
+			spd_ptr = INFO_iSPD_SRUSH;
+		}
+		equal_spd_ptr();
+		sync_step();
+	}
+	disable_adj();
+	turn_right(	INFO_iSPD_SRUSH,
+				INFO_aSFRRL_aSTP,
+				INFO_aSFRRL_uSTP,
+				INFO_aSFRRL_dPL,
+				INFO_aSFRRL_dPR);
+
+	reset_steps();
+	enable_adj();
+	refresh_level_D();
+	refresh_edge();
+
+	set_fSPD();
+	// End of TURN
+
+	reset_steps();
+	enable_adj();
+
+	spd_diff	= 2;
+	while(1)	{
+		scan_level_D();
+		scan_edge();
+		adj_DF0();
+		if ( spd_ptr_L >= INFO_iSPD_RUSH)	break;
+		equal_spd_ptr();
+		sync_step();
+	}
+	reset_spd_diff();	spd_ptr	= INFO_iSPD_RUSH;
+
+}

@@ -1,0 +1,170 @@
+#include "cx.h"
+#include "algol.h"
+#include "display.h"
+#include "dos.h"
+
+
+void dmethod();
+void clearwall();
+void knowwall(unsigned char pos);
+
+// -------------------------------
+// begin prog
+//
+/*
+void clearweight()
+{
+	for (int i=0;i<256;i++)
+		maze_weight[i]=0;
+}
+*/
+/*
+char* selectfile()
+{
+	char xtemp[30],temp[30];
+	scanf("%s",xtemp);
+	sprintf(temp,"maze\\%s",xtemp);
+	return temp;
+}
+*/
+/*
+void block_all_open_walls()
+{
+	for(int i=0;i<256;i++)
+		{
+		if ((maze[i]>>4)==0x00)
+			{
+			maze[i]|=0xf0;
+			for (int j=0;j<4;j++)
+				maze[i+dxy[j]]|=(wall_bit((j+2)%4)<<4);
+			}
+		}
+}
+*/
+void clearwall()
+{
+	for(int i=0;i<256;i++)
+		{
+		maze[i]&=0x0f;
+		}
+	for(i=0;i<16;i++)
+		{
+		maze[(i<<4)+0x0f]|=NORTH;
+		maze[0xf0+i]|=EAST;
+		maze[i<<4]|=SOUTH;
+		maze[i]|=WEST;
+		}
+	maze[0x00]|=maze[0x00]<<4;
+	maze[0x10]|=WEST;
+}
+
+
+void main()
+{
+	int gd=DETECT,gm;
+	int ch;
+
+	initgraph(&gd,&gm,"");
+	loadmaze("maze\\default.maz");
+
+	clearwall();
+	drawmaze();
+	drawwall();
+
+	display();
+
+
+	while(1)
+	{
+	ch=getch();
+	switch(toupper(ch))
+		{
+		case 'D':
+			dmethod();
+			break;
+		case 27 : goto END;
+		}
+	}
+	END:
+	closegraph();
+}
+
+void loadmaze(char *filename)
+{
+	FILE *fp;
+	if (!(fp=fopen(filename,"rb")))
+		{
+		printf("not exist %s",filename);
+		exit(1);
+		}
+	fread(maze,256,1,fp);
+	fclose(fp);
+}
+
+
+void dmethod()
+{
+	init_weight();
+
+	unsigned char dir;
+   unsigned char path_now;
+
+	int goal = SCAN_GOAL;
+	int togoal = 0;
+
+	mouse_pos = 0x00;
+	mouse_dir = N;
+
+
+	knowwall(mouse_pos);
+   knowwall(mouse_pos + dxy[mouse_dir]);
+
+	RESCAN:
+   delay(100);
+	scan_maze(goal);
+   path_fptr = path_rptr;
+	make_path();
+	showpath();
+
+   while ( path_fptr != path_rptr )
+	{
+      path_now  = path[path_fptr];
+      path_fptr = ++path_fptr % PATH_SIZE;
+
+		dir  = get_asolute_direc( path_now , mouse_dir );  // get asolute direc
+
+
+		if ((maze[mouse_pos] & wall_bit(dir))) goto RESCAN;
+
+		mouse_dir=dir;
+		mouse_pos+=dxy[dir];
+
+		knowwall ( mouse_pos );
+		drawwall();
+		drawmouse( path_now );
+      delay(20);
+	}
+
+	goal=0x00;
+	togoal++;
+	if (togoal==1) {getch();goto RESCAN;}
+}
+
+void knowwall(unsigned char pos)
+{
+	int x,y;
+
+	maze[pos]|=maze[pos]<<4;
+	maze_info[pos] = 1;
+
+	x=pos_x(pos);
+	y=pos_y(pos);
+
+	if (maze[pos]&NORTH && y<15) maze[pos+dxy[N]]|=SOUTH;
+	if (maze[pos]&EAST && x<15) maze[pos+dxy[E]]|=WEST;
+	if (maze[pos]&SOUTH && y>0) maze[pos+dxy[S]]|=NORTH;
+	if (maze[pos]&WEST && x>0) maze[pos+dxy[W]]|=EAST;
+
+
+}
+

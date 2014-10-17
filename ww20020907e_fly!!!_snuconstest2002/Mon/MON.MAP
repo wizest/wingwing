@@ -1,0 +1,86 @@
+
+ Start  Stop   Length Name               Class
+
+ 00000H 0062DH 0062EH _TEXT              CODE
+ 00630H 00630H 00000H _FARDATA           FAR_DATA
+ 00630H 00630H 00000H _FARBSS            FAR_BSS
+ 00630H 00630H 00000H _OVERLAY_          OVRINFO
+ 00630H 00630H 00000H _1STUB_            STUBSEG
+ 00630H 007B6H 00187H _DATA              DATA
+ 007B8H 007B8H 00000H _CVTSEG            DATA
+ 007B8H 007B8H 00000H _SCNSEG            DATA
+ 007B8H 007B8H 00000H _CONST             CONST
+ 007B8H 007B8H 00000H _INIT_             INITDATA
+ 007B8H 007B8H 00000H _INITEND_          INITDATA
+ 007B8H 007B8H 00000H _EXIT_             EXITDATA
+ 007B8H 007B8H 00000H _EXITEND_          EXITDATA
+ 007B8H 007BBH 00004H _BSS               BSS
+ 007BCH 007BCH 00000H _BSSEND            BSSEND
+
+
+Detailed map of segments
+
+ 0000:0000 0045 C=CODE   S=_TEXT          G=(none)  M=c0.ASM     ACBP=28
+ 0000:0045 05E9 C=CODE   S=_TEXT          G=(none)  M=MON.CPP    ACBP=28
+ 0063:0000 0000 C=FAR_DATA S=_FARDATA       G=(none)  M=c0.ASM     ACBP=68
+ 0063:0000 0000 C=FAR_BSS S=_FARBSS        G=(none)  M=c0.ASM     ACBP=68
+ 0063:0000 0000 C=OVRINFO S=_OVERLAY_      G=(none)  M=c0.ASM     ACBP=68
+ 0063:0000 0000 C=STUBSEG S=_1STUB_        G=(none)  M=c0.ASM     ACBP=68
+ 0063:0000 0080 C=DATA   S=_DATA          G=DGROUP  M=c0.ASM     ACBP=68
+ 0063:0080 0107 C=DATA   S=_DATA          G=DGROUP  M=MON.CPP    ACBP=48
+ 0063:0188 0000 C=DATA   S=_CVTSEG        G=DGROUP  M=c0.ASM     ACBP=48
+ 0063:0188 0000 C=DATA   S=_SCNSEG        G=DGROUP  M=c0.ASM     ACBP=48
+ 0063:0188 0000 C=CONST  S=_CONST         G=DGROUP  M=c0.ASM     ACBP=48
+ 0063:0188 0000 C=INITDATA S=_INIT_         G=DGROUP  M=c0.ASM     ACBP=48
+ 0063:0188 0000 C=INITDATA S=_INITEND_      G=DGROUP  M=c0.ASM     ACBP=28
+ 0063:0188 0000 C=EXITDATA S=_EXIT_         G=DGROUP  M=c0.ASM     ACBP=48
+ 0063:0188 0000 C=EXITDATA S=_EXITEND_      G=DGROUP  M=c0.ASM     ACBP=28
+ 0063:0188 0000 C=BSS    S=_BSS           G=DGROUP  M=c0.ASM     ACBP=48
+ 0063:0188 0004 C=BSS    S=_BSS           G=DGROUP  M=MON.CPP    ACBP=48
+ 0063:018C 0000 C=BSSEND S=_BSSEND        G=DGROUP  M=c0.ASM     ACBP=28
+
+  Address         Publics by Name
+
+ 0000:02AF idle  Delay(unsigned int)
+ 0000:01A4 idle  DownLoad(long)
+ 0000:00C4 idle  InitPort()
+ 0000:0108 idle  InitSerial()
+ 0000:02F1 idle  LedOff(long)
+ 0000:02CC idle  LedOn(long)
+ 0000:031A idle  LedShow()
+ 0000:039F idle  LedShowEntry()
+ 0000:05EA idle  RAMmemcpy(long,long,unsigned int)
+ 0000:026A idle  ReadKey()
+ 0000:015D idle  ReceiveByte()
+ 0000:014B idle  ReceiveChar()
+ 0000:04F8 idle  ROMmemcpy(long,long,unsigned int)
+ 0000:0117 idle  SendChar(unsigned char)
+ 0000:0130 idle  SendString(char near*)
+ 0000:0045       _main
+ 0063:0188 idle  _pdata0
+ 0063:018A idle  _pdata1
+
+  Address         Publics by Value
+
+ 0000:0045       _main
+ 0000:00C4 idle  InitPort()
+ 0000:0108 idle  InitSerial()
+ 0000:0117 idle  SendChar(unsigned char)
+ 0000:0130 idle  SendString(char near*)
+ 0000:014B idle  ReceiveChar()
+ 0000:015D idle  ReceiveByte()
+ 0000:01A4 idle  DownLoad(long)
+ 0000:026A idle  ReadKey()
+ 0000:02AF idle  Delay(unsigned int)
+ 0000:02CC idle  LedOn(long)
+ 0000:02F1 idle  LedOff(long)
+ 0000:031A idle  LedShow()
+ 0000:039F idle  LedShowEntry()
+ 0000:04F8 idle  ROMmemcpy(long,long,unsigned int)
+ 0000:05EA idle  RAMmemcpy(long,long,unsigned int)
+ 0063:0188 idle  _pdata0
+ 0063:018A idle  _pdata1
+
+Program entry point at 0000:0000
+Warning: No stack
+

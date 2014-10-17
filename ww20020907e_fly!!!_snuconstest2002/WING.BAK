@@ -1,0 +1,1195 @@
+
+ Start  Stop   Length Name               Class
+
+ 00000H 08599H 0859AH _TEXT              CODE
+ 085A0H 085A0H 00000H _FARDATA           FAR_DATA
+ 085A0H 085A0H 00000H _FARBSS            FAR_BSS
+ 085A0H 085A0H 00000H _OVERLAY_          OVRINFO
+ 085A0H 085A0H 00000H _1STUB_            STUBSEG
+ 085A0H 0A035H 01A96H _DATA              DATA
+ 0A036H 0A036H 00000H _CVTSEG            DATA
+ 0A036H 0A036H 00000H _SCNSEG            DATA
+ 0A036H 0A036H 00000H _CONST             CONST
+ 0A036H 0A036H 00000H _INIT_             INITDATA
+ 0A036H 0A036H 00000H _INITEND_          INITDATA
+ 0A036H 0A036H 00000H _EXIT_             EXITDATA
+ 0A036H 0A036H 00000H _EXITEND_          EXITDATA
+ 0A036H 0BF43H 01F0EH _BSS               BSS
+ 0BF44H 0BF44H 00000H _BSSEND            BSSEND
+
+
+Detailed map of segments
+
+ 0000:0000 0045 C=CODE   S=_TEXT          G=(none)  M=c0.ASM     ACBP=28
+ 0000:0045 04DA C=CODE   S=_TEXT          G=(none)  M=ADJ.CPP    ACBP=28
+ 0000:051F 02C3 C=CODE   S=_TEXT          G=(none)  M=ADJ_POS.CPP ACBP=28
+ 0000:07E2 0046 C=CODE   S=_TEXT          G=(none)  M=DELAY.CPP  ACBP=28
+ 0000:0828 02C2 C=CODE   S=_TEXT          G=(none)  M=DRIVE.CPP  ACBP=28
+ 0000:0AEA 033C C=CODE   S=_TEXT          G=(none)  M=EDGE.CPP   ACBP=28
+ 0000:0E26 019F C=CODE   S=_TEXT          G=(none)  M=FLASH.CPP  ACBP=28
+ 0000:0FC5 0524 C=CODE   S=_TEXT          G=(none)  M=INFO.CPP   ACBP=28
+ 0000:14E9 0086 C=CODE   S=_TEXT          G=(none)  M=INIT_SYS.CPP ACBP=28
+ 0000:156F 0067 C=CODE   S=_TEXT          G=(none)  M=KEY.CPP    ACBP=28
+ 0000:15D6 0344 C=CODE   S=_TEXT          G=(none)  M=LED.CPP    ACBP=28
+ 0000:191A 0267 C=CODE   S=_TEXT          G=(none)  M=MAIN.CPP   ACBP=28
+ 0000:1B81 06A3 C=CODE   S=_TEXT          G=(none)  M=MOTOR.CPP  ACBP=28
+ 0000:2224 05F8 C=CODE   S=_TEXT          G=(none)  M=PATHCVRT.CPP ACBP=28
+ 0000:281C 1C6F C=CODE   S=_TEXT          G=(none)  M=RUN.CPP    ACBP=28
+ 0000:448B 1203 C=CODE   S=_TEXT          G=(none)  M=SAMPLING.CPP ACBP=28
+ 0000:568E 0202 C=CODE   S=_TEXT          G=(none)  M=SCAN.CPP   ACBP=28
+ 0000:5890 0421 C=CODE   S=_TEXT          G=(none)  M=SENSOR.CPP ACBP=28
+ 0000:5CB1 0148 C=CODE   S=_TEXT          G=(none)  M=SERIAL.CPP ACBP=28
+ 0000:5DF9 098A C=CODE   S=_TEXT          G=(none)  M=SET_RUN.CPP ACBP=28
+ 0000:6783 016B C=CODE   S=_TEXT          G=(none)  M=SOUND.CPP  ACBP=28
+ 0000:68EE 0358 C=CODE   S=_TEXT          G=(none)  M=SWING.CPP  ACBP=28
+ 0000:6C46 00BE C=CODE   S=_TEXT          G=(none)  M=TESTING.CPP ACBP=28
+ 0000:6D04 0EC8 C=CODE   S=_TEXT          G=(none)  M=TUNING.CPP ACBP=28
+ 0000:7BCC 00E8 C=CODE   S=_TEXT          G=(none)  M=TURN.CPP   ACBP=28
+ 0000:7CB4 08E6 C=CODE   S=_TEXT          G=(none)  M=ALGOL.CPP  ACBP=28
+ 085A:0000 0000 C=FAR_DATA S=_FARDATA       G=(none)  M=c0.ASM     ACBP=68
+ 085A:0000 0000 C=FAR_BSS S=_FARBSS        G=(none)  M=c0.ASM     ACBP=68
+ 085A:0000 0000 C=OVRINFO S=_OVERLAY_      G=(none)  M=c0.ASM     ACBP=68
+ 085A:0000 0000 C=STUBSEG S=_1STUB_        G=(none)  M=c0.ASM     ACBP=68
+ 085A:0000 0080 C=DATA   S=_DATA          G=DGROUP  M=c0.ASM     ACBP=68
+ 085A:0080 0200 C=DATA   S=_DATA          G=DGROUP  M=ADJ.CPP    ACBP=48
+ 085A:0280 0000 C=DATA   S=_DATA          G=DGROUP  M=ADJ_POS.CPP ACBP=48
+ 085A:0280 0000 C=DATA   S=_DATA          G=DGROUP  M=DELAY.CPP  ACBP=48
+ 085A:0280 0000 C=DATA   S=_DATA          G=DGROUP  M=DRIVE.CPP  ACBP=48
+ 085A:0280 0000 C=DATA   S=_DATA          G=DGROUP  M=EDGE.CPP   ACBP=48
+ 085A:0280 006B C=DATA   S=_DATA          G=DGROUP  M=FLASH.CPP  ACBP=48
+ 085A:02EC 015D C=DATA   S=_DATA          G=DGROUP  M=INFO.CPP   ACBP=48
+ 085A:044A 0077 C=DATA   S=_DATA          G=DGROUP  M=INIT_SYS.CPP ACBP=48
+ 085A:04C2 0000 C=DATA   S=_DATA          G=DGROUP  M=KEY.CPP    ACBP=48
+ 085A:04C2 0001 C=DATA   S=_DATA          G=DGROUP  M=LED.CPP    ACBP=48
+ 085A:04C4 0000 C=DATA   S=_DATA          G=DGROUP  M=MAIN.CPP   ACBP=48
+ 085A:04C4 1218 C=DATA   S=_DATA          G=DGROUP  M=MOTOR.CPP  ACBP=48
+ 085A:16DC 0000 C=DATA   S=_DATA          G=DGROUP  M=PATHCVRT.CPP ACBP=48
+ 085A:16DC 0000 C=DATA   S=_DATA          G=DGROUP  M=RUN.CPP    ACBP=48
+ 085A:16DC 01AB C=DATA   S=_DATA          G=DGROUP  M=SAMPLING.CPP ACBP=48
+ 085A:1888 0000 C=DATA   S=_DATA          G=DGROUP  M=SCAN.CPP   ACBP=48
+ 085A:1888 007B C=DATA   S=_DATA          G=DGROUP  M=SENSOR.CPP ACBP=48
+ 085A:1904 0000 C=DATA   S=_DATA          G=DGROUP  M=SERIAL.CPP ACBP=48
+ 085A:1904 0000 C=DATA   S=_DATA          G=DGROUP  M=SET_RUN.CPP ACBP=48
+ 085A:1904 0000 C=DATA   S=_DATA          G=DGROUP  M=SOUND.CPP  ACBP=48
+ 085A:1904 016A C=DATA   S=_DATA          G=DGROUP  M=SWING.CPP  ACBP=48
+ 085A:1A6E 0000 C=DATA   S=_DATA          G=DGROUP  M=TESTING.CPP ACBP=48
+ 085A:1A6E 0000 C=DATA   S=_DATA          G=DGROUP  M=TUNING.CPP ACBP=48
+ 085A:1A6E 0000 C=DATA   S=_DATA          G=DGROUP  M=TURN.CPP   ACBP=48
+ 085A:1A6E 0028 C=DATA   S=_DATA          G=DGROUP  M=ALGOL.CPP  ACBP=48
+ 085A:1A96 0000 C=DATA   S=_CVTSEG        G=DGROUP  M=c0.ASM     ACBP=48
+ 085A:1A96 0000 C=DATA   S=_SCNSEG        G=DGROUP  M=c0.ASM     ACBP=48
+ 085A:1A96 0000 C=CONST  S=_CONST         G=DGROUP  M=c0.ASM     ACBP=48
+ 085A:1A96 0000 C=INITDATA S=_INIT_         G=DGROUP  M=c0.ASM     ACBP=48
+ 085A:1A96 0000 C=INITDATA S=_INITEND_      G=DGROUP  M=c0.ASM     ACBP=28
+ 085A:1A96 0000 C=EXITDATA S=_EXIT_         G=DGROUP  M=c0.ASM     ACBP=48
+ 085A:1A96 0000 C=EXITDATA S=_EXITEND_      G=DGROUP  M=c0.ASM     ACBP=28
+ 085A:1A96 0000 C=BSS    S=_BSS           G=DGROUP  M=c0.ASM     ACBP=48
+ 085A:1A96 0016 C=BSS    S=_BSS           G=DGROUP  M=ADJ.CPP    ACBP=48
+ 085A:1AAC 0000 C=BSS    S=_BSS           G=DGROUP  M=ADJ_POS.CPP ACBP=48
+ 085A:1AAC 0000 C=BSS    S=_BSS           G=DGROUP  M=DELAY.CPP  ACBP=48
+ 085A:1AAC 0002 C=BSS    S=_BSS           G=DGROUP  M=DRIVE.CPP  ACBP=48
+ 085A:1AAE 0018 C=BSS    S=_BSS           G=DGROUP  M=EDGE.CPP   ACBP=48
+ 085A:1AC6 0000 C=BSS    S=_BSS           G=DGROUP  M=FLASH.CPP  ACBP=48
+ 085A:1AC6 0000 C=BSS    S=_BSS           G=DGROUP  M=INFO.CPP   ACBP=48
+ 085A:1AC6 0000 C=BSS    S=_BSS           G=DGROUP  M=INIT_SYS.CPP ACBP=48
+ 085A:1AC6 0000 C=BSS    S=_BSS           G=DGROUP  M=KEY.CPP    ACBP=48
+ 085A:1AC6 0000 C=BSS    S=_BSS           G=DGROUP  M=LED.CPP    ACBP=48
+ 085A:1AC6 0000 C=BSS    S=_BSS           G=DGROUP  M=MAIN.CPP   ACBP=48
+ 085A:1AC6 0024 C=BSS    S=_BSS           G=DGROUP  M=MOTOR.CPP  ACBP=48
+ 085A:1AEA 0002 C=BSS    S=_BSS           G=DGROUP  M=PATHCVRT.CPP ACBP=48
+ 085A:1AEC 0222 C=BSS    S=_BSS           G=DGROUP  M=RUN.CPP    ACBP=48
+ 085A:1D0E 108A C=BSS    S=_BSS           G=DGROUP  M=SAMPLING.CPP ACBP=48
+ 085A:2D98 0000 C=BSS    S=_BSS           G=DGROUP  M=SCAN.CPP   ACBP=48
+ 085A:2D98 006C C=BSS    S=_BSS           G=DGROUP  M=SENSOR.CPP ACBP=48
+ 085A:2E04 0000 C=BSS    S=_BSS           G=DGROUP  M=SERIAL.CPP ACBP=48
+ 085A:2E04 0184 C=BSS    S=_BSS           G=DGROUP  M=SET_RUN.CPP ACBP=48
+ 085A:2F88 0000 C=BSS    S=_BSS           G=DGROUP  M=SOUND.CPP  ACBP=48
+ 085A:2F88 0000 C=BSS    S=_BSS           G=DGROUP  M=SWING.CPP  ACBP=48
+ 085A:2F88 0000 C=BSS    S=_BSS           G=DGROUP  M=TESTING.CPP ACBP=48
+ 085A:2F88 0000 C=BSS    S=_BSS           G=DGROUP  M=TUNING.CPP ACBP=48
+ 085A:2F88 0000 C=BSS    S=_BSS           G=DGROUP  M=TURN.CPP   ACBP=48
+ 085A:2F88 0A1C C=BSS    S=_BSS           G=DGROUP  M=ALGOL.CPP  ACBP=48
+ 085A:39A4 0000 C=BSSEND S=_BSSEND        G=DGROUP  M=c0.ASM     ACBP=28
+
+  Address         Publics by Name
+
+ 0000:044E idle  adj_D()
+ 0000:0451       adj_DF0()
+ 0000:051B       adj_DF0a()
+ 0000:6D00 idle  adj_DF_0_test()
+ 0000:0092       adj_O()
+ 0000:6C4A       adj_O_test()
+ 0000:051F       adj_pos()
+ 0000:0524 idle  adj_pos_H()
+ 0000:0613       adj_pos_HS()
+ 0000:06EC       adj_pos_stop()
+ 0000:0523 idle  adj_pos_V()
+ 0000:568E idle  chk_walls(unsigned int,unsigned int)
+ 0000:2852       clr_run()
+ 0000:5901       cnt_ss_history(unsigned int,unsigned int)
+ 0000:0E3D       CopyMemory(unsigned char far*,unsigned char far*,unsigned int)
+ 0000:0E5F       CopyMemoryFLASH(unsigned char far*,unsigned char far*,unsigned int)
+ 0000:5960 idle  diff_ss_history_L(unsigned int)
+ 0000:599A idle  diff_ss_history_R(unsigned int)
+ 0000:0085       disable_adj()
+ 0000:0828       drive()
+ 0000:0862 idle  drive_one()
+ 0000:08A5       drive_one_R()
+ 0000:08E5       drive_one_S()
+ 0000:0A4D idle  drive_rush()
+ 0000:096B idle  drive_scan_R()
+ 0000:09DC idle  drive_scan_S()
+ 0000:0925       drive_two()
+ 0000:6D02 idle  edge_dn_45_test()
+ 0000:6D03 idle  edge_dn_90_test()
+ 0000:0075       enable_adj()
+ 0000:21AF       equal_spd_ptr()
+ 0000:18F5       eyes_off()
+ 0000:18EB       eyes_on()
+ 0000:2820       get_run()
+ 0000:5CB1       InitSerial()
+ 0000:0045       init_adj()
+ 0000:7CC1       init_maze()
+ 0000:1B81       init_motor()
+ 0000:7CB4       init_mouse()
+ 0000:151D idle  init_port()
+ 0000:281C       init_run()
+ 0000:5890       init_ss_history()
+ 0000:14E9       init_system()
+ 0000:5930 idle  intg_ss_history(unsigned int,unsigned int)
+ 0000:1722       led_count_down(int,int)
+ 0000:1630       led_num(char)
+ 0000:1601       led_off(long)
+ 0000:15D6       led_on(long)
+ 0000:17BF       led_show()
+ 0000:55C9 idle  linearization(unsigned char near*,int,int,int,int)
+ 0000:1076       load_maze()
+ 0000:10CF       load_sampl_value()
+ 0000:84AA       make_path()
+ 0000:0FE1       maze_backup()
+ 0000:1016       maze_recover()
+ 0000:10FA       maze_wallup()
+ 0000:1927 idle  menu()
+ 0000:1C03 idle  motor_int()
+ 0000:1EEA idle  motor_int_L()
+ 0000:1FAB idle  motor_int_R()
+ 0000:206B       motor_L()
+ 0000:20BC idle  motor_LR()
+ 0000:2094       motor_R()
+ 0000:215C       motor_start()
+ 0000:217E       motor_stop()
+ 0000:6C49 idle  motor_test()
+ 0000:2224       path_cvrt()
+ 0000:2659 idle  path_cvrt_rush_C(int,int)
+ 0000:2250 idle  path_cvrt_rush_D()
+ 0000:25F9 idle  path_cvrt_scan_C(int,int)
+ 0000:227A idle  path_cvrt_scan_D()
+ 0000:2242 idle  path_cvrt_scan_O()
+ 0000:4960       process_sampl_H()
+ 0000:44B8       process_sampl_V()
+ 0000:2841       put_run(void(near*)())
+ 0000:1599       read_key()
+ 0000:004C idle  refresh_adj_O()
+ 0000:0AF8       refresh_edge()
+ 0000:0AEA       refresh_level()
+ 0000:0AF1       refresh_level_D()
+ 0000:58BC       refresh_ss_history()
+ 0000:006B       reset_adj_mul()
+ 0000:219D       reset_spd_diff()
+ 0000:2194       reset_spd_ptr()
+ 0000:21A6       reset_steps()
+ 0000:213D       reverse_L()
+ 0000:2155       reverse_LR()
+ 0000:2149       reverse_R()
+ 0000:4083       run_aCHF()
+ 0000:3D99       run_aFHF()
+ 0000:57D8       run_algol()
+ 0000:3E13 idle  run_aSACCL()
+ 0000:414B       run_aSFF()
+ 0000:4284       run_aSFRF()
+ 0000:417C       run_aSFRL()
+ 0000:4383       run_aSFRRL()
+ 0000:3D12       run_aSHF()
+ 0000:3DA3       run_aTURN()
+ 0000:3808       run_irFF()
+ 0000:382F       run_irFL()
+ 0000:3855       run_irFR()
+ 0000:387B       run_irLF()
+ 0000:38C3       run_irLL()
+ 0000:3937       run_irLR()
+ 0000:389F       run_irRF()
+ 0000:39AB       run_irRL()
+ 0000:38FD       run_irRR()
+ 0000:3A1F       run_isFF()
+ 0000:3AEC       run_isFL()
+ 0000:3B53       run_isFR()
+ 0000:3A94       run_isLF()
+ 0000:3BBB       run_isLL()
+ 0000:3C15       run_isLR()
+ 0000:3AC0       run_isRF()
+ 0000:3C93       run_isRL()
+ 0000:3BE8       run_isRR()
+ 0000:3750       run_rFF()
+ 0000:36D8       run_rFL()
+ 0000:377E       run_rFLF()
+ 0000:3726       run_rFLL()
+ 0000:37D8       run_rFLLF()
+ 0000:36B4       run_rFR()
+ 0000:3754       run_rFRF()
+ 0000:36FC       run_rFRR()
+ 0000:37A8       run_rFRRF()
+ 0000:3639       run_rLF()
+ 0000:35DB       run_rLL()
+ 0000:3689       run_rLLF()
+ 0000:3600       run_rLR()
+ 0000:3614       run_rRF()
+ 0000:360A       run_rRL()
+ 0000:35B6       run_rRR()
+ 0000:365E       run_rRRF()
+ 0000:3391 idle  run_rush_D2D(int,int,int,int,int,int,int)
+ 0000:32C3 idle  run_rush_D2O(int,int,int,int,int,int,int)
+ 0000:345F idle  run_rush_DF()
+ 0000:2EA5 idle  run_rush_FF()
+ 0000:319A idle  run_rush_O2D(int,int,int,int,int,int,int)
+ 0000:3071 idle  run_rush_O2O(int,int,int,int,int,int,int)
+ 0000:2BBE       run_sBX()
+ 0000:285B       run_sFX()
+ 0000:2D4C       run_sLX()
+ 0000:2DF8       run_sRX()
+ 0000:512E idle  sampl_value(unsigned char near*)
+ 0000:0E26       SaveProgram()
+ 0000:104B       save_maze()
+ 0000:10AA       save_sampl_value()
+ 0000:0CE7       scan_edge()
+ 0000:0B07       scan_level()
+ 0000:0BF7       scan_level_D()
+ 0000:7D17       scan_maze(int)
+ 0000:5493 idle  search_V_step(unsigned char near*,unsigned char,unsigned int)
+ 0000:5CF7       SendByte(unsigned char)
+ 0000:5CC0       SendChar(unsigned char)
+ 0000:5CE1       SendString(char near*)
+ 0000:5D5F idle  SendWord(unsigned int)
+ 0000:21C6       set_fSPD()
+ 0000:21DA idle  set_motor_double_int_mode()
+ 0000:1BAF idle  set_motor_int()
+ 0000:2206 idle  set_motor_single_int_mode()
+ 0000:5E6C       set_run_iscan_120()
+ 0000:6030       set_run_rush_120()
+ 0000:6512       set_run_rush_250()
+ 0000:62A1       set_run_rush_250s()
+ 0000:5DF9       set_run_scan_120()
+ 0000:5A1D       set_ss_int()
+ 0000:21D0       set_tSPD()
+ 0000:11E8       show_info()
+ 0000:1382 idle  show_maze()
+ 0000:1269 idle  show_mouse()
+ 0000:133C idle  show_path()
+ 0000:514B       show_sampl_value()
+ 0000:5AB1 idle  show_ss_threshold()
+ 0000:5B85       show_ss_value()
+ 0000:448B idle  show_tbl(unsigned char near*)
+ 0000:14A0 idle  show_weight()
+ 0000:6783 idle  Sound(unsigned int,unsigned int)
+ 0000:68E4       Sound_Beep()
+ 0000:6823 idle  Sound_Off()
+ 0000:6831 idle  Sound_On()
+ 0000:683F       Sound_Select()
+ 0000:6893 idle  Sound_Start()
+ 0000:5A4A idle  ss_int()
+ 0000:59F9       ss_off()
+ 0000:59D4       ss_on()
+ 0000:5369       ss_sampl()
+ 0000:54AC idle  ss_sampl_H()
+ 0000:53C1 idle  ss_sampl_V()
+ 0000:68EE       swing(int)
+ 0000:69D3 idle  swing_left(int,int,int)
+ 0000:6A64 idle  swing_right(int,int,int)
+ 0000:6AF5       swing_S(int)
+ 0000:6D01 idle  swing_test()
+ 0000:18FF idle  switch_eyes()
+ 0000:21B6       sync_step()
+ 0000:07E2       sys_delay(unsigned int)
+ 0000:0805 idle  sys_short_delay(unsigned int)
+ 0000:6C46 idle  testing()
+ 0000:212F       torque_off()
+ 0000:2105       torque_on()
+ 0000:6D04       tune()
+ 0000:7AFE idle  tune_conti_turn()
+ 0000:79B1 idle  tune_edge()
+ 0000:7878 idle  tune_inter_RS()
+ 0000:7748 idle  tune_inter_SR()
+ 0000:7A47 idle  tune_oneblk()
+ 0000:6DBF idle  tune_rush()
+ 0000:725E idle  tune_rush_body(char,char,void(near*)())
+ 0000:73DB idle  tune_rush_body_C(void(near*)())
+ 0000:7002 idle  tune_rush_C()
+ 0000:6F42 idle  tune_rush_D()
+ 0000:7116 idle  tune_rush_Dc()
+ 0000:6E57 idle  tune_rush_O()
+ 0000:7050 idle  tune_rush_Oc()
+ 0000:71BE idle  tune_rush_S()
+ 0000:74ED idle  tune_scan()
+ 0000:7992 idle  tune_turn_180()
+ 0000:7BCC       turn_left(int,int,int,int,int)
+ 0000:7C40       turn_right(int,int,int,int,int)
+ 0000:6C48 idle  turn_test()
+ 0000:0FC5       update_pos(unsigned int)
+ 0000:0D8F       wait_edge(void(near*)(),int(near*)(),int,unsigned int near&,unsigned int near&)
+ 0000:156F       wait_key()
+ 0000:6C47 idle  watch_test()
+ 0000:128F idle  _show_path()
+ 085A:1AA2 idle  _adj_BrCL
+ 085A:1AA6 idle  _adj_BrCR
+ 085A:1AAA idle  _adj_BrLS
+ 085A:1AA4 idle  _adj_BrPL
+ 085A:1AA8 idle  _adj_BrPR
+ 085A:1A9E idle  _adj_BrSL
+ 085A:1AA0 idle  _adj_BrSR
+ 085A:1A9C idle  _adj_mode
+ 085A:1A98       _adj_mul_L
+ 085A:1A9A       _adj_mul_R
+ 085A:0080 idle  _adj_mul_tbl
+ 085A:1A96       _adj_switch
+ 085A:1AEA       _cvrt_mode
+ 085A:1A6E       _dxy
+ 085A:1ABE       _edge_info_L45
+ 085A:1AC2       _edge_info_L90
+ 085A:1AC0       _edge_info_R45
+ 085A:1AC4       _edge_info_R90
+ 085A:04C4 idle  _fspeed
+ 085A:1AAC       _goal_pos
+ 085A:2ECA       _INFO_aSFRF_aSTP
+ 085A:2ECE       _INFO_aSFRF_dPL
+ 085A:2ED0       _INFO_aSFRF_dPR
+ 085A:2EC8       _INFO_aSFRF_inSTP
+ 085A:2ECC       _INFO_aSFRF_uSTP
+ 085A:2EC0       _INFO_aSFRL_aSTP
+ 085A:2EC4       _INFO_aSFRL_dPL
+ 085A:2EC6       _INFO_aSFRL_dPR
+ 085A:2EBE       _INFO_aSFRL_inSTP
+ 085A:2EC2       _INFO_aSFRL_uSTP
+ 085A:2ED4       _INFO_aSFRRL_aSTP
+ 085A:2ED8       _INFO_aSFRRL_dPL
+ 085A:2EDA       _INFO_aSFRRL_dPR
+ 085A:2ED2       _INFO_aSFRRL_inSTP
+ 085A:2ED6       _INFO_aSFRRL_uSTP
+ 085A:2E2E       _INFO_irFF_outSTP
+ 085A:2E32       _INFO_irFL_aSTP
+ 085A:2E30       _INFO_irFL_inSTP
+ 085A:2E36       _INFO_irFL_outSTP
+ 085A:2E34       _INFO_irFL_uSTP
+ 085A:2E3A       _INFO_irFR_aSTP
+ 085A:2E38       _INFO_irFR_inSTP
+ 085A:2E3E       _INFO_irFR_outSTP
+ 085A:2E3C       _INFO_irFR_uSTP
+ 085A:2E40       _INFO_irLF_outSTP
+ 085A:2E46       _INFO_irLL_aSTP
+ 085A:2E44       _INFO_irLL_inSTP
+ 085A:2E4A       _INFO_irLL_outSTP
+ 085A:2E48       _INFO_irLL_uSTP
+ 085A:2E56       _INFO_irLR_a1STP
+ 085A:2E5A       _INFO_irLR_a2STP
+ 085A:2E60       _INFO_irLR_dPL
+ 085A:2E62       _INFO_irLR_dPR
+ 085A:2E54       _INFO_irLR_inSTP
+ 085A:2E5E       _INFO_irLR_outSTP
+ 085A:2E58       _INFO_irLR_u1STP
+ 085A:2E5C       _INFO_irLR_u2STP
+ 085A:2E42       _INFO_irRF_outSTP
+ 085A:2E66       _INFO_irRL_a1STP
+ 085A:2E6A       _INFO_irRL_a2STP
+ 085A:2E70       _INFO_irRL_dPL
+ 085A:2E72       _INFO_irRL_dPR
+ 085A:2E64       _INFO_irRL_inSTP
+ 085A:2E6E       _INFO_irRL_outSTP
+ 085A:2E68       _INFO_irRL_u1STP
+ 085A:2E6C       _INFO_irRL_u2STP
+ 085A:2E4E       _INFO_irRR_aSTP
+ 085A:2E4C       _INFO_irRR_inSTP
+ 085A:2E52       _INFO_irRR_outSTP
+ 085A:2E50       _INFO_irRR_uSTP
+ 085A:2E74       _INFO_isFF_outSTP
+ 085A:2E86       _INFO_isFL_inSTP
+ 085A:2E88       _INFO_isFR_inSTP
+ 085A:2E78       _INFO_isLF_aSTP
+ 085A:2E76       _INFO_isLF_inSTP
+ 085A:2E7C       _INFO_isLF_outSTP
+ 085A:2E7A       _INFO_isLF_uSTP
+ 085A:2E8C       _INFO_isLL_aSTP
+ 085A:2E8A       _INFO_isLL_inSTP
+ 085A:2E90       _INFO_isLL_outSTP
+ 085A:2E8E       _INFO_isLL_uSTP
+ 085A:2E9C       _INFO_isLR_a1STP
+ 085A:2EA0       _INFO_isLR_a2STP
+ 085A:2EA6       _INFO_isLR_dPL
+ 085A:2EA8       _INFO_isLR_dPR
+ 085A:2E9A       _INFO_isLR_inSTP
+ 085A:2EA4       _INFO_isLR_outSTP
+ 085A:2E9E       _INFO_isLR_u1STP
+ 085A:2EA2       _INFO_isLR_u2STP
+ 085A:2EBA       _INFO_iSPD_RUSH
+ 085A:2E08       _INFO_iSPD_SCAN
+ 085A:2EBC       _INFO_iSPD_SRUSH
+ 085A:2E80       _INFO_isRF_aSTP
+ 085A:2E7E       _INFO_isRF_inSTP
+ 085A:2E84       _INFO_isRF_outSTP
+ 085A:2E82       _INFO_isRF_uSTP
+ 085A:2EAC       _INFO_isRL_a1STP
+ 085A:2EB0       _INFO_isRL_a2STP
+ 085A:2EB6       _INFO_isRL_dPL
+ 085A:2EB8       _INFO_isRL_dPR
+ 085A:2EAA       _INFO_isRL_inSTP
+ 085A:2EB4       _INFO_isRL_outSTP
+ 085A:2EAE       _INFO_isRL_u1STP
+ 085A:2EB2       _INFO_isRL_u2STP
+ 085A:2E94       _INFO_isRR_aSTP
+ 085A:2E92       _INFO_isRR_inSTP
+ 085A:2E98       _INFO_isRR_outSTP
+ 085A:2E96       _INFO_isRR_uSTP
+ 085A:2E0A       _INFO_overSTP
+ 085A:2F86       _INFO_rDF_aMAX
+ 085A:2EDC       _INFO_rFF_aMAX
+ 085A:2EEC       _INFO_rFLF_aSTP
+ 085A:2EF0       _INFO_rFLF_dPL
+ 085A:2EF2       _INFO_rFLF_dPR
+ 085A:2EEA       _INFO_rFLF_inSTP
+ 085A:2EF4       _INFO_rFLF_outSTP
+ 085A:2EEE       _INFO_rFLF_uSTP
+ 085A:2F04       _INFO_rFLLF_aSTP
+ 085A:2F08       _INFO_rFLLF_dPL
+ 085A:2F0A       _INFO_rFLLF_dPR
+ 085A:2F02       _INFO_rFLLF_inSTP
+ 085A:2F0C       _INFO_rFLLF_outSTP
+ 085A:2F06       _INFO_rFLLF_uSTP
+ 085A:2F34       _INFO_rFLL_aSTP
+ 085A:2F38       _INFO_rFLL_dPL
+ 085A:2F3A       _INFO_rFLL_dPR
+ 085A:2F32       _INFO_rFLL_inSTP
+ 085A:2F3C       _INFO_rFLL_outSTP
+ 085A:2F36       _INFO_rFLL_uSTP
+ 085A:2F1C       _INFO_rFL_aSTP
+ 085A:2F20       _INFO_rFL_dPL
+ 085A:2F22       _INFO_rFL_dPR
+ 085A:2F1A       _INFO_rFL_inSTP
+ 085A:2F24       _INFO_rFL_outSTP
+ 085A:2F1E       _INFO_rFL_uSTP
+ 085A:2EE0       _INFO_rFRF_aSTP
+ 085A:2EE4       _INFO_rFRF_dPL
+ 085A:2EE6       _INFO_rFRF_dPR
+ 085A:2EDE       _INFO_rFRF_inSTP
+ 085A:2EE8       _INFO_rFRF_outSTP
+ 085A:2EE2       _INFO_rFRF_uSTP
+ 085A:2EF8       _INFO_rFRRF_aSTP
+ 085A:2EFC       _INFO_rFRRF_dPL
+ 085A:2EFE       _INFO_rFRRF_dPR
+ 085A:2EF6       _INFO_rFRRF_inSTP
+ 085A:2F00       _INFO_rFRRF_outSTP
+ 085A:2EFA       _INFO_rFRRF_uSTP
+ 085A:2F28       _INFO_rFRR_aSTP
+ 085A:2F2C       _INFO_rFRR_dPL
+ 085A:2F2E       _INFO_rFRR_dPR
+ 085A:2F26       _INFO_rFRR_inSTP
+ 085A:2F30       _INFO_rFRR_outSTP
+ 085A:2F2A       _INFO_rFRR_uSTP
+ 085A:2F10       _INFO_rFR_aSTP
+ 085A:2F14       _INFO_rFR_dPL
+ 085A:2F16       _INFO_rFR_dPR
+ 085A:2F0E       _INFO_rFR_inSTP
+ 085A:2F18       _INFO_rFR_outSTP
+ 085A:2F12       _INFO_rFR_uSTP
+ 085A:2F4C       _INFO_rLF_aSTP
+ 085A:2F50       _INFO_rLF_dPL
+ 085A:2F52       _INFO_rLF_dPR
+ 085A:2F4A       _INFO_rLF_inSTP
+ 085A:2F54       _INFO_rLF_outSTP
+ 085A:2F4E       _INFO_rLF_uSTP
+ 085A:2F64       _INFO_rLLF_aSTP
+ 085A:2F68       _INFO_rLLF_dPL
+ 085A:2F6A       _INFO_rLLF_dPR
+ 085A:2F62       _INFO_rLLF_inSTP
+ 085A:2F6C       _INFO_rLLF_outSTP
+ 085A:2F66       _INFO_rLLF_uSTP
+ 085A:2F70       _INFO_rLL_aSTP
+ 085A:2F74       _INFO_rLL_dPL
+ 085A:2F76       _INFO_rLL_dPR
+ 085A:2F6E       _INFO_rLL_inSTP
+ 085A:2F78       _INFO_rLL_outSTP
+ 085A:2F72       _INFO_rLL_uSTP
+ 085A:2F40       _INFO_rRF_aSTP
+ 085A:2F44       _INFO_rRF_dPL
+ 085A:2F46       _INFO_rRF_dPR
+ 085A:2F3E       _INFO_rRF_inSTP
+ 085A:2F48       _INFO_rRF_outSTP
+ 085A:2F42       _INFO_rRF_uSTP
+ 085A:2F58       _INFO_rRRF_aSTP
+ 085A:2F5C       _INFO_rRRF_dPL
+ 085A:2F5E       _INFO_rRRF_dPR
+ 085A:2F56       _INFO_rRRF_inSTP
+ 085A:2F60       _INFO_rRRF_outSTP
+ 085A:2F5A       _INFO_rRRF_uSTP
+ 085A:2F7C       _INFO_rRR_aSTP
+ 085A:2F80       _INFO_rRR_dPL
+ 085A:2F82       _INFO_rRR_dPR
+ 085A:2F7A       _INFO_rRR_inSTP
+ 085A:2F84       _INFO_rRR_outSTP
+ 085A:2F7E       _INFO_rRR_uSTP
+ 085A:2E10       _INFO_sFX_aMAX
+ 085A:2E0C       _INFO_sFX_aMOD
+ 085A:2E0E       _INFO_sFX_aSPD
+ 085A:2E24       _INFO_sLX_aSTP
+ 085A:2E28       _INFO_sLX_dPL
+ 085A:2E2A       _INFO_sLX_dPR
+ 085A:2E20       _INFO_sLX_inSTP
+ 085A:2E2C       _INFO_sLX_outSTP
+ 085A:2E22       _INFO_sLX_tPOS
+ 085A:2E26       _INFO_sLX_uSTP
+ 085A:2E16       _INFO_sRX_aSTP
+ 085A:2E1A       _INFO_sRX_dPL
+ 085A:2E1C       _INFO_sRX_dPR
+ 085A:2E12       _INFO_sRX_inSTP
+ 085A:2E1E       _INFO_sRX_outSTP
+ 085A:2E14       _INFO_sRX_tPOS
+ 085A:2E18       _INFO_sRX_uSTP
+ 085A:1AAE       _level_C_L45
+ 085A:1AB2       _level_C_L90
+ 085A:1AB6       _level_C_R45
+ 085A:1ABA       _level_C_R90
+ 085A:1AB0       _level_P_L45
+ 085A:1AB4       _level_P_L90
+ 085A:1AB8       _level_P_R45
+ 085A:1ABC       _level_P_R90
+ 0000:191A       _main
+ 085A:2F88       _maze
+ 085A:3388       _maze_info
+ 085A:3188       _maze_weight
+ 085A:1AE8 idle  _motor_cnt_ref
+ 085A:1AD4 idle  _motor_int_interval_cnt
+ 085A:1AE6 idle  _motor_int_mode
+ 085A:358A       _mouse_dir
+ 085A:3588       _mouse_pos
+ 085A:3590       _path
+ 085A:358C       _path_fptr
+ 085A:379A       _path_info
+ 085A:358E       _path_rptr
+ 085A:044A       _pdata0
+ 085A:044C       _pdata1
+ 085A:1AC8 idle  _phase_dir_L
+ 085A:1ACA idle  _phase_dir_R
+ 085A:16BC idle  _phase_L
+ 085A:1ACC idle  _phase_ptr_L
+ 085A:1ACE idle  _phase_ptr_R
+ 085A:16CC idle  _phase_R
+ 085A:2798       _pos_L0
+ 085A:2998       _pos_L45
+ 085A:2B98       _pos_L90
+ 085A:2898       _pos_R0
+ 085A:2A98       _pos_R45
+ 085A:2C98       _pos_R90
+ 085A:1AEC       _run
+ 085A:1D0A       _run_fptr
+ 085A:1AEE       _run_queue
+ 085A:1D0C       _run_rptr
+ 085A:1D20 idle  _sC1
+ 085A:2E04       _set_run_rush
+ 085A:2E06       _set_run_scan
+ 085A:1D38       _sFL0
+ 085A:1F5E idle  _sFR0
+ 085A:1D1A idle  _sL1
+ 085A:1D14 idle  _sL2
+ 085A:1D0E       _sL3
+ 085A:1AD6 idle  _spd_cnt
+ 085A:1AD0 idle  _spd_cnt_L
+ 085A:1AD2 idle  _spd_cnt_R
+ 085A:1ADC       _spd_diff_L
+ 085A:1ADE       _spd_diff_R
+ 085A:1AD8       _spd_ptr_L
+ 085A:1ADA       _spd_ptr_R
+ 085A:1AC6 idle  _speed
+ 085A:1D26 idle  _sR1
+ 085A:1D2C idle  _sR2
+ 085A:1D32 idle  _sR3
+ 085A:2198       _ssv_L0
+ 085A:2398 idle  _ssv_L45
+ 085A:2598       _ssv_L90
+ 085A:2298       _ssv_R0
+ 085A:2498 idle  _ssv_R45
+ 085A:2698       _ssv_R90
+ 085A:18AE idle  _ss_AD_addr
+ 085A:1896 idle  _ss_get
+ 085A:2DA4       _ss_history
+ 085A:18C6       _ss_his_ptr_L
+ 085A:18C8       _ss_his_ptr_R
+ 085A:18BA idle  _ss_order
+ 085A:1888 idle  _ss_ptr
+ 085A:188A idle  _ss_ptr_next
+ 085A:18A2 idle  _ss_shot
+ 085A:2D98       _ss_value
+ 085A:1AE0       _steps_L
+ 085A:1AE2       _steps_R
+ 085A:1904 idle  _swing_H_tbl
+ 085A:19B8 idle  _swing_S_tbl
+ 085A:1AE4 idle  _sync_signal
+ 085A:2184       _threshold_L0
+ 085A:2186       _threshold_L0_A
+ 085A:2188       _threshold_L45
+ 085A:2190       _threshold_L45_BR
+ 085A:2192       _threshold_L45_BRL
+ 085A:218C       _threshold_L45_D
+ 085A:218E       _threshold_L45_DL
+ 085A:218A       _threshold_L45_LOW
+ 085A:2194       _threshold_L90
+ 085A:2196 idle  _threshold_L90_LOW
+ 085A:2185       _threshold_R0
+ 085A:2187       _threshold_R0_A
+ 085A:2189       _threshold_R45
+ 085A:2191       _threshold_R45_BR
+ 085A:2193       _threshold_R45_BRL
+ 085A:218D       _threshold_R45_D
+ 085A:218F       _threshold_R45_DL
+ 085A:218B       _threshold_R45_LOW
+ 085A:2195       _threshold_R90
+ 085A:2197 idle  _threshold_R90_LOW
+ 085A:120C idle  _tspeed
+
+  Address         Publics by Value
+
+ 0000:0045       init_adj()
+ 0000:004C idle  refresh_adj_O()
+ 0000:006B       reset_adj_mul()
+ 0000:0075       enable_adj()
+ 0000:0085       disable_adj()
+ 0000:0092       adj_O()
+ 0000:044E idle  adj_D()
+ 0000:0451       adj_DF0()
+ 0000:051B       adj_DF0a()
+ 0000:051F       adj_pos()
+ 0000:0523 idle  adj_pos_V()
+ 0000:0524 idle  adj_pos_H()
+ 0000:0613       adj_pos_HS()
+ 0000:06EC       adj_pos_stop()
+ 0000:07E2       sys_delay(unsigned int)
+ 0000:0805 idle  sys_short_delay(unsigned int)
+ 0000:0828       drive()
+ 0000:0862 idle  drive_one()
+ 0000:08A5       drive_one_R()
+ 0000:08E5       drive_one_S()
+ 0000:0925       drive_two()
+ 0000:096B idle  drive_scan_R()
+ 0000:09DC idle  drive_scan_S()
+ 0000:0A4D idle  drive_rush()
+ 0000:0AEA       refresh_level()
+ 0000:0AF1       refresh_level_D()
+ 0000:0AF8       refresh_edge()
+ 0000:0B07       scan_level()
+ 0000:0BF7       scan_level_D()
+ 0000:0CE7       scan_edge()
+ 0000:0D8F       wait_edge(void(near*)(),int(near*)(),int,unsigned int near&,unsigned int near&)
+ 0000:0E26       SaveProgram()
+ 0000:0E3D       CopyMemory(unsigned char far*,unsigned char far*,unsigned int)
+ 0000:0E5F       CopyMemoryFLASH(unsigned char far*,unsigned char far*,unsigned int)
+ 0000:0FC5       update_pos(unsigned int)
+ 0000:0FE1       maze_backup()
+ 0000:1016       maze_recover()
+ 0000:104B       save_maze()
+ 0000:1076       load_maze()
+ 0000:10AA       save_sampl_value()
+ 0000:10CF       load_sampl_value()
+ 0000:10FA       maze_wallup()
+ 0000:11E8       show_info()
+ 0000:1269 idle  show_mouse()
+ 0000:128F idle  _show_path()
+ 0000:133C idle  show_path()
+ 0000:1382 idle  show_maze()
+ 0000:14A0 idle  show_weight()
+ 0000:14E9       init_system()
+ 0000:151D idle  init_port()
+ 0000:156F       wait_key()
+ 0000:1599       read_key()
+ 0000:15D6       led_on(long)
+ 0000:1601       led_off(long)
+ 0000:1630       led_num(char)
+ 0000:1722       led_count_down(int,int)
+ 0000:17BF       led_show()
+ 0000:18EB       eyes_on()
+ 0000:18F5       eyes_off()
+ 0000:18FF idle  switch_eyes()
+ 0000:191A       _main
+ 0000:1927 idle  menu()
+ 0000:1B81       init_motor()
+ 0000:1BAF idle  set_motor_int()
+ 0000:1C03 idle  motor_int()
+ 0000:1EEA idle  motor_int_L()
+ 0000:1FAB idle  motor_int_R()
+ 0000:206B       motor_L()
+ 0000:2094       motor_R()
+ 0000:20BC idle  motor_LR()
+ 0000:2105       torque_on()
+ 0000:212F       torque_off()
+ 0000:213D       reverse_L()
+ 0000:2149       reverse_R()
+ 0000:2155       reverse_LR()
+ 0000:215C       motor_start()
+ 0000:217E       motor_stop()
+ 0000:2194       reset_spd_ptr()
+ 0000:219D       reset_spd_diff()
+ 0000:21A6       reset_steps()
+ 0000:21AF       equal_spd_ptr()
+ 0000:21B6       sync_step()
+ 0000:21C6       set_fSPD()
+ 0000:21D0       set_tSPD()
+ 0000:21DA idle  set_motor_double_int_mode()
+ 0000:2206 idle  set_motor_single_int_mode()
+ 0000:2224       path_cvrt()
+ 0000:2242 idle  path_cvrt_scan_O()
+ 0000:2250 idle  path_cvrt_rush_D()
+ 0000:227A idle  path_cvrt_scan_D()
+ 0000:25F9 idle  path_cvrt_scan_C(int,int)
+ 0000:2659 idle  path_cvrt_rush_C(int,int)
+ 0000:281C       init_run()
+ 0000:2820       get_run()
+ 0000:2841       put_run(void(near*)())
+ 0000:2852       clr_run()
+ 0000:285B       run_sFX()
+ 0000:2BBE       run_sBX()
+ 0000:2D4C       run_sLX()
+ 0000:2DF8       run_sRX()
+ 0000:2EA5 idle  run_rush_FF()
+ 0000:3071 idle  run_rush_O2O(int,int,int,int,int,int,int)
+ 0000:319A idle  run_rush_O2D(int,int,int,int,int,int,int)
+ 0000:32C3 idle  run_rush_D2O(int,int,int,int,int,int,int)
+ 0000:3391 idle  run_rush_D2D(int,int,int,int,int,int,int)
+ 0000:345F idle  run_rush_DF()
+ 0000:35B6       run_rRR()
+ 0000:35DB       run_rLL()
+ 0000:3600       run_rLR()
+ 0000:360A       run_rRL()
+ 0000:3614       run_rRF()
+ 0000:3639       run_rLF()
+ 0000:365E       run_rRRF()
+ 0000:3689       run_rLLF()
+ 0000:36B4       run_rFR()
+ 0000:36D8       run_rFL()
+ 0000:36FC       run_rFRR()
+ 0000:3726       run_rFLL()
+ 0000:3750       run_rFF()
+ 0000:3754       run_rFRF()
+ 0000:377E       run_rFLF()
+ 0000:37A8       run_rFRRF()
+ 0000:37D8       run_rFLLF()
+ 0000:3808       run_irFF()
+ 0000:382F       run_irFL()
+ 0000:3855       run_irFR()
+ 0000:387B       run_irLF()
+ 0000:389F       run_irRF()
+ 0000:38C3       run_irLL()
+ 0000:38FD       run_irRR()
+ 0000:3937       run_irLR()
+ 0000:39AB       run_irRL()
+ 0000:3A1F       run_isFF()
+ 0000:3A94       run_isLF()
+ 0000:3AC0       run_isRF()
+ 0000:3AEC       run_isFL()
+ 0000:3B53       run_isFR()
+ 0000:3BBB       run_isLL()
+ 0000:3BE8       run_isRR()
+ 0000:3C15       run_isLR()
+ 0000:3C93       run_isRL()
+ 0000:3D12       run_aSHF()
+ 0000:3D99       run_aFHF()
+ 0000:3DA3       run_aTURN()
+ 0000:3E13 idle  run_aSACCL()
+ 0000:4083       run_aCHF()
+ 0000:414B       run_aSFF()
+ 0000:417C       run_aSFRL()
+ 0000:4284       run_aSFRF()
+ 0000:4383       run_aSFRRL()
+ 0000:448B idle  show_tbl(unsigned char near*)
+ 0000:44B8       process_sampl_V()
+ 0000:4960       process_sampl_H()
+ 0000:512E idle  sampl_value(unsigned char near*)
+ 0000:514B       show_sampl_value()
+ 0000:5369       ss_sampl()
+ 0000:53C1 idle  ss_sampl_V()
+ 0000:5493 idle  search_V_step(unsigned char near*,unsigned char,unsigned int)
+ 0000:54AC idle  ss_sampl_H()
+ 0000:55C9 idle  linearization(unsigned char near*,int,int,int,int)
+ 0000:568E idle  chk_walls(unsigned int,unsigned int)
+ 0000:57D8       run_algol()
+ 0000:5890       init_ss_history()
+ 0000:58BC       refresh_ss_history()
+ 0000:5901       cnt_ss_history(unsigned int,unsigned int)
+ 0000:5930 idle  intg_ss_history(unsigned int,unsigned int)
+ 0000:5960 idle  diff_ss_history_L(unsigned int)
+ 0000:599A idle  diff_ss_history_R(unsigned int)
+ 0000:59D4       ss_on()
+ 0000:59F9       ss_off()
+ 0000:5A1D       set_ss_int()
+ 0000:5A4A idle  ss_int()
+ 0000:5AB1 idle  show_ss_threshold()
+ 0000:5B85       show_ss_value()
+ 0000:5CB1       InitSerial()
+ 0000:5CC0       SendChar(unsigned char)
+ 0000:5CE1       SendString(char near*)
+ 0000:5CF7       SendByte(unsigned char)
+ 0000:5D5F idle  SendWord(unsigned int)
+ 0000:5DF9       set_run_scan_120()
+ 0000:5E6C       set_run_iscan_120()
+ 0000:6030       set_run_rush_120()
+ 0000:62A1       set_run_rush_250s()
+ 0000:6512       set_run_rush_250()
+ 0000:6783 idle  Sound(unsigned int,unsigned int)
+ 0000:6823 idle  Sound_Off()
+ 0000:6831 idle  Sound_On()
+ 0000:683F       Sound_Select()
+ 0000:6893 idle  Sound_Start()
+ 0000:68E4       Sound_Beep()
+ 0000:68EE       swing(int)
+ 0000:69D3 idle  swing_left(int,int,int)
+ 0000:6A64 idle  swing_right(int,int,int)
+ 0000:6AF5       swing_S(int)
+ 0000:6C46 idle  testing()
+ 0000:6C47 idle  watch_test()
+ 0000:6C48 idle  turn_test()
+ 0000:6C49 idle  motor_test()
+ 0000:6C4A       adj_O_test()
+ 0000:6D00 idle  adj_DF_0_test()
+ 0000:6D01 idle  swing_test()
+ 0000:6D02 idle  edge_dn_45_test()
+ 0000:6D03 idle  edge_dn_90_test()
+ 0000:6D04       tune()
+ 0000:6DBF idle  tune_rush()
+ 0000:6E57 idle  tune_rush_O()
+ 0000:6F42 idle  tune_rush_D()
+ 0000:7002 idle  tune_rush_C()
+ 0000:7050 idle  tune_rush_Oc()
+ 0000:7116 idle  tune_rush_Dc()
+ 0000:71BE idle  tune_rush_S()
+ 0000:725E idle  tune_rush_body(char,char,void(near*)())
+ 0000:73DB idle  tune_rush_body_C(void(near*)())
+ 0000:74ED idle  tune_scan()
+ 0000:7748 idle  tune_inter_SR()
+ 0000:7878 idle  tune_inter_RS()
+ 0000:7992 idle  tune_turn_180()
+ 0000:79B1 idle  tune_edge()
+ 0000:7A47 idle  tune_oneblk()
+ 0000:7AFE idle  tune_conti_turn()
+ 0000:7BCC       turn_left(int,int,int,int,int)
+ 0000:7C40       turn_right(int,int,int,int,int)
+ 0000:7CB4       init_mouse()
+ 0000:7CC1       init_maze()
+ 0000:7D17       scan_maze(int)
+ 0000:84AA       make_path()
+ 085A:0080 idle  _adj_mul_tbl
+ 085A:044A       _pdata0
+ 085A:044C       _pdata1
+ 085A:04C4 idle  _fspeed
+ 085A:120C idle  _tspeed
+ 085A:16BC idle  _phase_L
+ 085A:16CC idle  _phase_R
+ 085A:1888 idle  _ss_ptr
+ 085A:188A idle  _ss_ptr_next
+ 085A:1896 idle  _ss_get
+ 085A:18A2 idle  _ss_shot
+ 085A:18AE idle  _ss_AD_addr
+ 085A:18BA idle  _ss_order
+ 085A:18C6       _ss_his_ptr_L
+ 085A:18C8       _ss_his_ptr_R
+ 085A:1904 idle  _swing_H_tbl
+ 085A:19B8 idle  _swing_S_tbl
+ 085A:1A6E       _dxy
+ 085A:1A96       _adj_switch
+ 085A:1A98       _adj_mul_L
+ 085A:1A9A       _adj_mul_R
+ 085A:1A9C idle  _adj_mode
+ 085A:1A9E idle  _adj_BrSL
+ 085A:1AA0 idle  _adj_BrSR
+ 085A:1AA2 idle  _adj_BrCL
+ 085A:1AA4 idle  _adj_BrPL
+ 085A:1AA6 idle  _adj_BrCR
+ 085A:1AA8 idle  _adj_BrPR
+ 085A:1AAA idle  _adj_BrLS
+ 085A:1AAC       _goal_pos
+ 085A:1AAE       _level_C_L45
+ 085A:1AB0       _level_P_L45
+ 085A:1AB2       _level_C_L90
+ 085A:1AB4       _level_P_L90
+ 085A:1AB6       _level_C_R45
+ 085A:1AB8       _level_P_R45
+ 085A:1ABA       _level_C_R90
+ 085A:1ABC       _level_P_R90
+ 085A:1ABE       _edge_info_L45
+ 085A:1AC0       _edge_info_R45
+ 085A:1AC2       _edge_info_L90
+ 085A:1AC4       _edge_info_R90
+ 085A:1AC6 idle  _speed
+ 085A:1AC8 idle  _phase_dir_L
+ 085A:1ACA idle  _phase_dir_R
+ 085A:1ACC idle  _phase_ptr_L
+ 085A:1ACE idle  _phase_ptr_R
+ 085A:1AD0 idle  _spd_cnt_L
+ 085A:1AD2 idle  _spd_cnt_R
+ 085A:1AD4 idle  _motor_int_interval_cnt
+ 085A:1AD6 idle  _spd_cnt
+ 085A:1AD8       _spd_ptr_L
+ 085A:1ADA       _spd_ptr_R
+ 085A:1ADC       _spd_diff_L
+ 085A:1ADE       _spd_diff_R
+ 085A:1AE0       _steps_L
+ 085A:1AE2       _steps_R
+ 085A:1AE4 idle  _sync_signal
+ 085A:1AE6 idle  _motor_int_mode
+ 085A:1AE8 idle  _motor_cnt_ref
+ 085A:1AEA       _cvrt_mode
+ 085A:1AEC       _run
+ 085A:1AEE       _run_queue
+ 085A:1D0A       _run_fptr
+ 085A:1D0C       _run_rptr
+ 085A:1D0E       _sL3
+ 085A:1D14 idle  _sL2
+ 085A:1D1A idle  _sL1
+ 085A:1D20 idle  _sC1
+ 085A:1D26 idle  _sR1
+ 085A:1D2C idle  _sR2
+ 085A:1D32 idle  _sR3
+ 085A:1D38       _sFL0
+ 085A:1F5E idle  _sFR0
+ 085A:2184       _threshold_L0
+ 085A:2185       _threshold_R0
+ 085A:2186       _threshold_L0_A
+ 085A:2187       _threshold_R0_A
+ 085A:2188       _threshold_L45
+ 085A:2189       _threshold_R45
+ 085A:218A       _threshold_L45_LOW
+ 085A:218B       _threshold_R45_LOW
+ 085A:218C       _threshold_L45_D
+ 085A:218D       _threshold_R45_D
+ 085A:218E       _threshold_L45_DL
+ 085A:218F       _threshold_R45_DL
+ 085A:2190       _threshold_L45_BR
+ 085A:2191       _threshold_R45_BR
+ 085A:2192       _threshold_L45_BRL
+ 085A:2193       _threshold_R45_BRL
+ 085A:2194       _threshold_L90
+ 085A:2195       _threshold_R90
+ 085A:2196 idle  _threshold_L90_LOW
+ 085A:2197 idle  _threshold_R90_LOW
+ 085A:2198       _ssv_L0
+ 085A:2298       _ssv_R0
+ 085A:2398 idle  _ssv_L45
+ 085A:2498 idle  _ssv_R45
+ 085A:2598       _ssv_L90
+ 085A:2698       _ssv_R90
+ 085A:2798       _pos_L0
+ 085A:2898       _pos_R0
+ 085A:2998       _pos_L45
+ 085A:2A98       _pos_R45
+ 085A:2B98       _pos_L90
+ 085A:2C98       _pos_R90
+ 085A:2D98       _ss_value
+ 085A:2DA4       _ss_history
+ 085A:2E04       _set_run_rush
+ 085A:2E06       _set_run_scan
+ 085A:2E08       _INFO_iSPD_SCAN
+ 085A:2E0A       _INFO_overSTP
+ 085A:2E0C       _INFO_sFX_aMOD
+ 085A:2E0E       _INFO_sFX_aSPD
+ 085A:2E10       _INFO_sFX_aMAX
+ 085A:2E12       _INFO_sRX_inSTP
+ 085A:2E14       _INFO_sRX_tPOS
+ 085A:2E16       _INFO_sRX_aSTP
+ 085A:2E18       _INFO_sRX_uSTP
+ 085A:2E1A       _INFO_sRX_dPL
+ 085A:2E1C       _INFO_sRX_dPR
+ 085A:2E1E       _INFO_sRX_outSTP
+ 085A:2E20       _INFO_sLX_inSTP
+ 085A:2E22       _INFO_sLX_tPOS
+ 085A:2E24       _INFO_sLX_aSTP
+ 085A:2E26       _INFO_sLX_uSTP
+ 085A:2E28       _INFO_sLX_dPL
+ 085A:2E2A       _INFO_sLX_dPR
+ 085A:2E2C       _INFO_sLX_outSTP
+ 085A:2E2E       _INFO_irFF_outSTP
+ 085A:2E30       _INFO_irFL_inSTP
+ 085A:2E32       _INFO_irFL_aSTP
+ 085A:2E34       _INFO_irFL_uSTP
+ 085A:2E36       _INFO_irFL_outSTP
+ 085A:2E38       _INFO_irFR_inSTP
+ 085A:2E3A       _INFO_irFR_aSTP
+ 085A:2E3C       _INFO_irFR_uSTP
+ 085A:2E3E       _INFO_irFR_outSTP
+ 085A:2E40       _INFO_irLF_outSTP
+ 085A:2E42       _INFO_irRF_outSTP
+ 085A:2E44       _INFO_irLL_inSTP
+ 085A:2E46       _INFO_irLL_aSTP
+ 085A:2E48       _INFO_irLL_uSTP
+ 085A:2E4A       _INFO_irLL_outSTP
+ 085A:2E4C       _INFO_irRR_inSTP
+ 085A:2E4E       _INFO_irRR_aSTP
+ 085A:2E50       _INFO_irRR_uSTP
+ 085A:2E52       _INFO_irRR_outSTP
+ 085A:2E54       _INFO_irLR_inSTP
+ 085A:2E56       _INFO_irLR_a1STP
+ 085A:2E58       _INFO_irLR_u1STP
+ 085A:2E5A       _INFO_irLR_a2STP
+ 085A:2E5C       _INFO_irLR_u2STP
+ 085A:2E5E       _INFO_irLR_outSTP
+ 085A:2E60       _INFO_irLR_dPL
+ 085A:2E62       _INFO_irLR_dPR
+ 085A:2E64       _INFO_irRL_inSTP
+ 085A:2E66       _INFO_irRL_a1STP
+ 085A:2E68       _INFO_irRL_u1STP
+ 085A:2E6A       _INFO_irRL_a2STP
+ 085A:2E6C       _INFO_irRL_u2STP
+ 085A:2E6E       _INFO_irRL_outSTP
+ 085A:2E70       _INFO_irRL_dPL
+ 085A:2E72       _INFO_irRL_dPR
+ 085A:2E74       _INFO_isFF_outSTP
+ 085A:2E76       _INFO_isLF_inSTP
+ 085A:2E78       _INFO_isLF_aSTP
+ 085A:2E7A       _INFO_isLF_uSTP
+ 085A:2E7C       _INFO_isLF_outSTP
+ 085A:2E7E       _INFO_isRF_inSTP
+ 085A:2E80       _INFO_isRF_aSTP
+ 085A:2E82       _INFO_isRF_uSTP
+ 085A:2E84       _INFO_isRF_outSTP
+ 085A:2E86       _INFO_isFL_inSTP
+ 085A:2E88       _INFO_isFR_inSTP
+ 085A:2E8A       _INFO_isLL_inSTP
+ 085A:2E8C       _INFO_isLL_aSTP
+ 085A:2E8E       _INFO_isLL_uSTP
+ 085A:2E90       _INFO_isLL_outSTP
+ 085A:2E92       _INFO_isRR_inSTP
+ 085A:2E94       _INFO_isRR_aSTP
+ 085A:2E96       _INFO_isRR_uSTP
+ 085A:2E98       _INFO_isRR_outSTP
+ 085A:2E9A       _INFO_isLR_inSTP
+ 085A:2E9C       _INFO_isLR_a1STP
+ 085A:2E9E       _INFO_isLR_u1STP
+ 085A:2EA0       _INFO_isLR_a2STP
+ 085A:2EA2       _INFO_isLR_u2STP
+ 085A:2EA4       _INFO_isLR_outSTP
+ 085A:2EA6       _INFO_isLR_dPL
+ 085A:2EA8       _INFO_isLR_dPR
+ 085A:2EAA       _INFO_isRL_inSTP
+ 085A:2EAC       _INFO_isRL_a1STP
+ 085A:2EAE       _INFO_isRL_u1STP
+ 085A:2EB0       _INFO_isRL_a2STP
+ 085A:2EB2       _INFO_isRL_u2STP
+ 085A:2EB4       _INFO_isRL_outSTP
+ 085A:2EB6       _INFO_isRL_dPL
+ 085A:2EB8       _INFO_isRL_dPR
+ 085A:2EBA       _INFO_iSPD_RUSH
+ 085A:2EBC       _INFO_iSPD_SRUSH
+ 085A:2EBE       _INFO_aSFRL_inSTP
+ 085A:2EC0       _INFO_aSFRL_aSTP
+ 085A:2EC2       _INFO_aSFRL_uSTP
+ 085A:2EC4       _INFO_aSFRL_dPL
+ 085A:2EC6       _INFO_aSFRL_dPR
+ 085A:2EC8       _INFO_aSFRF_inSTP
+ 085A:2ECA       _INFO_aSFRF_aSTP
+ 085A:2ECC       _INFO_aSFRF_uSTP
+ 085A:2ECE       _INFO_aSFRF_dPL
+ 085A:2ED0       _INFO_aSFRF_dPR
+ 085A:2ED2       _INFO_aSFRRL_inSTP
+ 085A:2ED4       _INFO_aSFRRL_aSTP
+ 085A:2ED6       _INFO_aSFRRL_uSTP
+ 085A:2ED8       _INFO_aSFRRL_dPL
+ 085A:2EDA       _INFO_aSFRRL_dPR
+ 085A:2EDC       _INFO_rFF_aMAX
+ 085A:2EDE       _INFO_rFRF_inSTP
+ 085A:2EE0       _INFO_rFRF_aSTP
+ 085A:2EE2       _INFO_rFRF_uSTP
+ 085A:2EE4       _INFO_rFRF_dPL
+ 085A:2EE6       _INFO_rFRF_dPR
+ 085A:2EE8       _INFO_rFRF_outSTP
+ 085A:2EEA       _INFO_rFLF_inSTP
+ 085A:2EEC       _INFO_rFLF_aSTP
+ 085A:2EEE       _INFO_rFLF_uSTP
+ 085A:2EF0       _INFO_rFLF_dPL
+ 085A:2EF2       _INFO_rFLF_dPR
+ 085A:2EF4       _INFO_rFLF_outSTP
+ 085A:2EF6       _INFO_rFRRF_inSTP
+ 085A:2EF8       _INFO_rFRRF_aSTP
+ 085A:2EFA       _INFO_rFRRF_uSTP
+ 085A:2EFC       _INFO_rFRRF_dPL
+ 085A:2EFE       _INFO_rFRRF_dPR
+ 085A:2F00       _INFO_rFRRF_outSTP
+ 085A:2F02       _INFO_rFLLF_inSTP
+ 085A:2F04       _INFO_rFLLF_aSTP
+ 085A:2F06       _INFO_rFLLF_uSTP
+ 085A:2F08       _INFO_rFLLF_dPL
+ 085A:2F0A       _INFO_rFLLF_dPR
+ 085A:2F0C       _INFO_rFLLF_outSTP
+ 085A:2F0E       _INFO_rFR_inSTP
+ 085A:2F10       _INFO_rFR_aSTP
+ 085A:2F12       _INFO_rFR_uSTP
+ 085A:2F14       _INFO_rFR_dPL
+ 085A:2F16       _INFO_rFR_dPR
+ 085A:2F18       _INFO_rFR_outSTP
+ 085A:2F1A       _INFO_rFL_inSTP
+ 085A:2F1C       _INFO_rFL_aSTP
+ 085A:2F1E       _INFO_rFL_uSTP
+ 085A:2F20       _INFO_rFL_dPL
+ 085A:2F22       _INFO_rFL_dPR
+ 085A:2F24       _INFO_rFL_outSTP
+ 085A:2F26       _INFO_rFRR_inSTP
+ 085A:2F28       _INFO_rFRR_aSTP
+ 085A:2F2A       _INFO_rFRR_uSTP
+ 085A:2F2C       _INFO_rFRR_dPL
+ 085A:2F2E       _INFO_rFRR_dPR
+ 085A:2F30       _INFO_rFRR_outSTP
+ 085A:2F32       _INFO_rFLL_inSTP
+ 085A:2F34       _INFO_rFLL_aSTP
+ 085A:2F36       _INFO_rFLL_uSTP
+ 085A:2F38       _INFO_rFLL_dPL
+ 085A:2F3A       _INFO_rFLL_dPR
+ 085A:2F3C       _INFO_rFLL_outSTP
+ 085A:2F3E       _INFO_rRF_inSTP
+ 085A:2F40       _INFO_rRF_aSTP
+ 085A:2F42       _INFO_rRF_uSTP
+ 085A:2F44       _INFO_rRF_dPL
+ 085A:2F46       _INFO_rRF_dPR
+ 085A:2F48       _INFO_rRF_outSTP
+ 085A:2F4A       _INFO_rLF_inSTP
+ 085A:2F4C       _INFO_rLF_aSTP
+ 085A:2F4E       _INFO_rLF_uSTP
+ 085A:2F50       _INFO_rLF_dPL
+ 085A:2F52       _INFO_rLF_dPR
+ 085A:2F54       _INFO_rLF_outSTP
+ 085A:2F56       _INFO_rRRF_inSTP
+ 085A:2F58       _INFO_rRRF_aSTP
+ 085A:2F5A       _INFO_rRRF_uSTP
+ 085A:2F5C       _INFO_rRRF_dPL
+ 085A:2F5E       _INFO_rRRF_dPR
+ 085A:2F60       _INFO_rRRF_outSTP
+ 085A:2F62       _INFO_rLLF_inSTP
+ 085A:2F64       _INFO_rLLF_aSTP
+ 085A:2F66       _INFO_rLLF_uSTP
+ 085A:2F68       _INFO_rLLF_dPL
+ 085A:2F6A       _INFO_rLLF_dPR
+ 085A:2F6C       _INFO_rLLF_outSTP
+ 085A:2F6E       _INFO_rLL_inSTP
+ 085A:2F70       _INFO_rLL_aSTP
+ 085A:2F72       _INFO_rLL_uSTP
+ 085A:2F74       _INFO_rLL_dPL
+ 085A:2F76       _INFO_rLL_dPR
+ 085A:2F78       _INFO_rLL_outSTP
+ 085A:2F7A       _INFO_rRR_inSTP
+ 085A:2F7C       _INFO_rRR_aSTP
+ 085A:2F7E       _INFO_rRR_uSTP
+ 085A:2F80       _INFO_rRR_dPL
+ 085A:2F82       _INFO_rRR_dPR
+ 085A:2F84       _INFO_rRR_outSTP
+ 085A:2F86       _INFO_rDF_aMAX
+ 085A:2F88       _maze
+ 085A:3188       _maze_weight
+ 085A:3388       _maze_info
+ 085A:3588       _mouse_pos
+ 085A:358A       _mouse_dir
+ 085A:358C       _path_fptr
+ 085A:358E       _path_rptr
+ 085A:3590       _path
+ 085A:379A       _path_info
+
+Program entry point at 0000:0000
+

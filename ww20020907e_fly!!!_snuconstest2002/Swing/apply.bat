@@ -1,0 +1,3 @@
+@echo off
+echo Copying swing table to main folder...
+copy swing.tbl ..

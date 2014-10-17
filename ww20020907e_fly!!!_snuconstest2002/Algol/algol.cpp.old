@@ -1,0 +1,402 @@
+////////////////////////////////////////////////////////////////////////////
+// Searching algorithm oriented diagonal direction for "WingWing"
+//
+// Author : Kim Sang-hoon
+// 			HandS, Korea Univ.
+// 			wizest@hanmail.net
+// 			http://hands.korea.edu/~wizest
+//
+// reconstruction of scan_maze()								- 2000.8.28
+// unrolling of scan_maze() 									- 2000.9.17
+// optimization	of make_path() 									- 2000.9.17
+// design sequences to be compared in make_path()
+//		 to give current direction priority
+//																- 2000.10.7
+// cutting paths off not to need for driving in make_path()
+//                                  							- 2000.12.3
+// scan_maze 2nd unrolling for speed							- 2001.4.5
+//
+// last updated 2001.4.5
+////////////////////////////////////////////////////////////////////////////
+
+#include <stdio.h>
+#include <graphics.h>
+
+#include "algol.h"
+
+unsigned int maze[MAZE_SIZE];
+unsigned int maze_weight[MAZE_SIZE];
+unsigned int maze_info[MAZE_SIZE];
+	// info of valid maze is 1 !!
+	// otherwise info     is 0 !!
+
+unsigned int mouse_pos; 	// current position of mouse
+unsigned int mouse_dir; 	// current direction of mouse
+
+unsigned int path_fptr; 					// front pointer of path queue
+unsigned int path_rptr; 					// rear pointer of path queue
+unsigned int path[PATH_SIZE];				// queue of paths
+unsigned int path_info[PATH_SIZE];			// queue of path's infomations
+	// info of valid path is 1 !! it can be converted !!
+	// otherwise info     is 0 !!
+	// valid path means the path through valid block once drived
+
+int dxy[4] = { 0x01, 0x10,-0x01,-0x10};	// delta position from block to block
+	//          N     E     S     W
+
+void init_mouse()
+{
+	mouse_pos = 0x00;
+	mouse_dir = N;
+}
+void init_maze()
+{
+	for(int i=0 ; i<MAZE_SIZE ; i++)	{
+		maze_info[i] = 0x00;
+		maze	 [i] = 0x00;
+	}
+	for(i=0 ; i<16 ; i++)		{
+		maze[ (i<<4)+0x0F  ] |= NORTH;
+		maze[ i + 0xF0	   ] |= EAST;
+		maze[ i<<4		   ] |= SOUTH;
+		maze[ i		   	   ] |= WEST;
+	}
+	maze[0x00] |= EAST;
+	maze[0x10] |= WEST;
+
+	maze_info[0x00] = 1; // valid
+}
+
+void scan_maze( int scan_pos )
+{
+	// 2000.8.28 reconstruction
+	// 2001.4.5	 2nd Optimization
+
+	// definition and declare
+		// position queue
+			#define Q_SIZE 		4096//256
+			#define up_fptr()	fptr++//fptr = ++fptr & 0xFF//fptr = ++fptr % Q_SIZE
+			#define up_rptr()	rptr++//rptr = ++rptr & 0xFF//rptr = ++rptr % Q_SIZE
+			unsigned int pos_Q[Q_SIZE];	// position queue
+			unsigned int fptr , rptr;		// front & rear pointer of pos_Q
+		// direction history
+			unsigned int dir_history[MAZE_SIZE]; // index is position
+		// weight
+			// CAUTION!! : some delta weight values occur dilemma to make paths.
+			#define	DW_F	2//1//2 		// delta weight for orthogonal forward
+			#define DW_DF	1//2//1 		// delta weight for diagonal forward
+			#define DW_MIN	DW_DF   		// less value between DW_F and DW_DF
+		// etc
+			unsigned int  pos,v_pos;		// from pos_Q
+
+	// initiation
+	fptr	= rptr	= 0;
+	for (int i=0;i<MAZE_SIZE;i++) 	{
+		#define NO_WEIGHT	0xFFFF
+		#define NO_HISTORY  0xFF
+		maze_weight[i] = NO_WEIGHT;
+		dir_history[i] = NO_HISTORY;
+	}
+
+	// put
+	if( scan_pos == SCAN_GOAL )		{
+		maze_weight[0x77] =
+		maze_weight[0x78] =
+		maze_weight[0x87] =
+		maze_weight[0x88] = 0;
+
+		pos_Q[rptr] = 0x77;		up_rptr();
+		pos_Q[rptr] = 0x78;		up_rptr();
+		pos_Q[rptr] = 0x87;		up_rptr();
+		pos_Q[rptr] = 0x88;		up_rptr();
+	}
+	else	{
+		maze_weight[ scan_pos ] =	0;
+		pos_Q[rptr] = (unsigned int)scan_pos;	up_rptr();
+	}
+
+	// body
+	while( 1 )	{
+		// get
+		if ( fptr == rptr ) 	break;		// empty -> ending condition
+		pos  = pos_Q[fptr];		up_fptr();
+
+		if ( pos == mouse_pos ) break; 		// CAUTION!! ; ending condition
+
+		/*// ORIGINAL ////////////////////////////////////////////////////
+		for( dir=N ; dir <= W ; dir++ )	{
+			// wall exist ?
+			if( !( maze[pos] & wall_bit(dir) ) )	{
+				v_pos = pos+dxy[dir];
+				// processing condition : more previous weight than currently calculated
+				if ( maze_weight[ v_pos ] > 	maze_weight[ pos ] + DW_MIN )	{
+				//if ( maze_weight[ v_pos ] == NO_WEIGHT )	{
+					// process weight
+					if ( dir_history[pos] == dir )
+						// orthogonal forward ///////////////
+						maze_weight [ v_pos ] = maze_weight[ pos ] + DW_F;
+					else
+						// diagonal forward /////////////////
+						// strictly this condition is fail!
+						// diagonal forward is exactly that
+						// the path before the previous path equals to
+						// the current path!
+						// but for speed, the condition is loosened
+						maze_weight [ v_pos ] = maze_weight[ pos ] + DW_DF;
+					// record dir in dir_history for diagonal priority
+					dir_history[ v_pos ] = dir;
+					// put
+					pos_Q[rptr] = v_pos;		up_rptr();
+				}
+			}
+		}
+		*/////////////////////////////////////////////////////////////////
+
+		// for speed, unrolling //////////////////////////////////////////
+		// 2000.9.17
+		// 2001.4.5
+
+		// frequently used values
+		unsigned int	c_maze;
+		unsigned int  	c_dir_history;
+		unsigned int 	weight_THRS;
+		unsigned int 	weight_F;
+		unsigned int 	weight_DF;
+
+		c_maze			= maze[pos];
+		c_dir_history	= dir_history[ pos ];
+		weight_THRS 	= maze_weight[ pos ] + DW_MIN;
+		weight_F		= maze_weight[ pos ] + DW_F;
+		weight_DF		= maze_weight[ pos ] + DW_DF;
+
+		switch( c_dir_history )		{
+			case N :
+				// N
+				if( !( c_maze & NORTH ) )	{
+					v_pos = pos + dxy[ N ];
+					if ( maze_weight[ v_pos ] > weight_THRS )	{
+						maze_weight [ v_pos ] = weight_F;
+						dir_history [ v_pos ] = N;
+						pos_Q[rptr] = v_pos;		up_rptr();
+					}
+				}
+				// E
+				if( !( c_maze & EAST ) )	{
+					v_pos = pos + dxy[ E ];
+					if ( maze_weight[ v_pos ] > weight_THRS )	{
+						maze_weight [ v_pos ] = weight_DF;
+						dir_history [ v_pos ] = E;
+						pos_Q[rptr] = v_pos;		up_rptr();
+					}
+				}
+				// W
+				if( !( c_maze & WEST ) )	{
+					v_pos = pos + dxy[ W ];
+					if ( maze_weight[ v_pos ] > weight_THRS )	{
+						maze_weight [ v_pos ] = weight_DF;
+						dir_history [ v_pos ] = W;
+						pos_Q[rptr] = v_pos;		up_rptr();
+					}
+				}
+				break;
+			case E :
+				// N
+				if( !( c_maze & NORTH ) )	{
+					v_pos = pos + dxy[ N ];
+					if ( maze_weight[ v_pos ] > weight_THRS )	{
+						maze_weight [ v_pos ] = weight_DF;
+						dir_history [ v_pos ] = N;
+						pos_Q[rptr] = v_pos;		up_rptr();
+					}
+				}
+				// E
+				if( !( c_maze & EAST ) )	{
+					v_pos = pos + dxy[ E ];
+					if ( maze_weight[ v_pos ] > weight_THRS )	{
+						maze_weight [ v_pos ] = weight_F;
+						dir_history [ v_pos ] = E;
+						pos_Q[rptr] = v_pos;		up_rptr();
+					}
+				}
+				// S
+				if( !( c_maze & SOUTH ) )	{
+					v_pos = pos + dxy[ S ];
+					if ( maze_weight[ v_pos ] > weight_THRS )	{
+						maze_weight [ v_pos ] = weight_DF;
+						dir_history [ v_pos ] = S;
+						pos_Q[rptr] = v_pos;		up_rptr();
+					}
+				}
+				break;
+			case S :
+				// E
+				if( !( c_maze & EAST ) )	{
+					v_pos = pos + dxy[ E ];
+					if ( maze_weight[ v_pos ] > weight_THRS )	{
+						maze_weight [ v_pos ] = weight_DF;
+						dir_history [ v_pos ] = E;
+						pos_Q[rptr] = v_pos;		up_rptr();
+					}
+				}
+				// S
+				if( !( c_maze & SOUTH ) )	{
+					v_pos = pos + dxy[ S ];
+					if ( maze_weight[ v_pos ] > weight_THRS )	{
+						maze_weight [ v_pos ] = weight_F;
+						dir_history [ v_pos ] = S;
+						pos_Q[rptr] = v_pos;		up_rptr();
+					}
+				}
+				// W
+				if( !( c_maze & WEST ) )	{
+					v_pos = pos + dxy[ W ];
+					if ( maze_weight[ v_pos ] > weight_THRS )	{
+						maze_weight [ v_pos ] = weight_DF;
+						dir_history [ v_pos ] = W;
+						pos_Q[rptr] = v_pos;		up_rptr();
+					}
+				}
+				break;
+			case W :
+				// N
+				if( !( c_maze & NORTH ) )	{
+					v_pos = pos + dxy[ N ];
+					if ( maze_weight[ v_pos ] > weight_THRS )	{
+						maze_weight [ v_pos ] = weight_DF;
+						dir_history [ v_pos ] = N;
+						pos_Q[rptr] = v_pos;		up_rptr();
+					}
+				}
+				// S
+				if( !( c_maze & SOUTH ) )	{
+					v_pos = pos + dxy[ S ];
+					if ( maze_weight[ v_pos ] > weight_THRS )	{
+						maze_weight [ v_pos ] = weight_DF;
+						dir_history [ v_pos ] = S;
+						pos_Q[rptr] = v_pos;		up_rptr();
+					}
+				}
+				// W
+				if( !( c_maze & WEST ) )	{
+					v_pos = pos + dxy[ W ];
+					if ( maze_weight[ v_pos ] > weight_THRS )	{
+						maze_weight [ v_pos ] = weight_F;
+						dir_history [ v_pos ] = W;
+						pos_Q[rptr] = v_pos;		up_rptr();
+					}
+				}
+				break;
+			default :
+				// N
+				if( !( c_maze & NORTH ) )	{
+					v_pos = pos + dxy[ N ];
+					if ( maze_weight[ v_pos ] > weight_THRS )	{
+						maze_weight [ v_pos ] = weight_THRS;
+						dir_history [ v_pos ] = N;
+						pos_Q[rptr] = v_pos;		up_rptr();
+					}
+				}
+				// E
+				if( !( c_maze & EAST ) )	{
+					v_pos = pos + dxy[ E ];
+					if ( maze_weight[ v_pos ] > weight_THRS )	{
+						maze_weight [ v_pos ] = weight_THRS;
+						dir_history [ v_pos ] = N;
+						pos_Q[rptr] = v_pos;		up_rptr();
+					}
+				}
+				// S
+				if( !( c_maze & SOUTH ) )	{
+					v_pos = pos + dxy[ S ];
+					if ( maze_weight[ v_pos ] > weight_THRS )	{
+						maze_weight [ v_pos ] = weight_THRS;
+						dir_history [ v_pos ] = S;
+						pos_Q[rptr] = v_pos;		up_rptr();
+					}
+				}
+				// W
+				if( !( c_maze & WEST ) )	{
+					v_pos = pos + dxy[ W ];
+					if ( maze_weight[ v_pos ] > weight_THRS )	{
+						maze_weight [ v_pos ] = weight_THRS;
+						dir_history [ v_pos ] = W;
+						pos_Q[rptr] = v_pos;		up_rptr();
+					}
+				}
+				break;
+		}	// end of switch
+	}
+
+	char temp[30];
+	sprintf(temp,"Queue Used  : %3d",rptr);
+	bar(465,320,640,300+40);
+	outtextxy(465,320,temp);
+	static int rptrMax;
+	rptrMax = rptrMax<rptr ? rptr:rptrMax;
+	sprintf(temp,"Queue Max   : %3d",rptrMax);
+	outtextxy(465,330,temp);
+
+}
+void make_path()
+{
+	// optimization	2000.9.17
+	// redesign		2000.10.7
+	// 		: sequences to be compared to give current direction priority
+
+	unsigned int c_maze;
+	unsigned int c_weight;
+	unsigned int pos_now,pos_next;
+	unsigned int dir_now,dir_next;
+	unsigned int c_dir;
+	unsigned int path_prev;
+	unsigned int sequence[4][4]={{0,1,2,3},{2,3,0,1},{2,3,1,0},{2,1,0,3}};
+	// sequences to be compared for the prority of running direction.
+	//						   	    F......   R......   B......   L......
+	//                        	    F R L B   L F R B   F R L B   R F L B
+	// first row is current(running) direction
+	// and the other is sequence to be compared
+
+	pos_now = mouse_pos;
+	dir_now = mouse_dir;
+	path_prev = F;
+
+	// clear path buff
+	path_fptr = path_rptr = 0;
+
+	while(1) 	{
+		// maze_weight[pos_now] == 0 -> ending condition
+		if ( !(c_weight = maze_weight[pos_now]) ) break;
+
+		c_maze = maze[pos_now];
+
+		int i = 0;
+		while( i < 4 )	{
+			// sequence to find the best direction oriented the current direction
+			c_dir = (sequence[path_prev][i]+dir_now) & 3;
+			if( !( c_maze & wall_bit(c_dir) ))	{
+				if( maze_weight[pos_now+dxy[c_dir]] < c_weight )	{
+					c_weight = maze_weight[ (pos_next=pos_now+dxy[c_dir]) ];
+					dir_next = c_dir;
+				}
+			}
+			i++;
+		}
+
+		path      [ path_rptr ] = path_prev = get_relative_dir(dir_next,dir_now);
+		path_info [ path_rptr ] = maze_info[ pos_next ];
+
+		//path_rptr = ++path_rptr % PATH_SIZE;
+		path_rptr++; // CAUTION!! it can make bug! 2000.7.3
+
+		dir_now = dir_next;
+		pos_now = pos_next;
+
+		//if ( !maze_info[ pos_now ] ) break; // CAUTION!! 2000.12.3 : ending condition
+	}
+
+	char temp[30];
+	sprintf(temp,"Path length : %3d",path_rptr);
+	bar(465,350,640,350+10);
+	outtextxy(465,350,temp);
+
+}

@@ -1,0 +1,456 @@
+void run_sFX() // Accl scanning
+{
+	#ifdef  DEBUG_SHOW_INFO
+		motor_stop();
+		wait_key();
+		show_maze();
+		show_path();
+		motor_start();
+	#endif
+
+	// update dir,pos
+	update_pos(F);
+
+	// Acclated FX //////////////////////////////////////////////////
+	if ( (maze_info[mouse_pos] & VALID_BLK) &&
+		 run_fptr != run_rptr ) {
+
+		unsigned int cnt_FX;
+		unsigned int v_dir,v_pos;
+		unsigned int v_run_fptr;
+
+		reset_steps();  reset_spd_diff();
+
+		// accl scanning speed
+		if (!INFO_sFX_aMOD)         spd_ptr = INFO_iSPD_SCAN;
+
+		enable_adj();
+
+		// count known sFX Block
+		cnt_FX      = 1;
+		v_run_fptr  = run_fptr;
+		v_dir       = mouse_dir;
+		v_pos       = mouse_pos;
+		while ( v_run_fptr < run_rptr &&
+				run_queue[ v_run_fptr ] == run_sFX &&
+				maze_info[ v_pos + dxy[v_dir] ] & VALID_BLK )       {
+			v_pos  += dxy [ v_dir ]; v_run_fptr++;  cnt_FX++;
+		}
+
+		// process paths
+		unsigned int i;
+		i = cnt_FX - 1; while ( i-- )   mouse_pos = mouse_pos + dxy [ mouse_dir ];
+		i = cnt_FX - 1; while ( i-- )   get_run();
+
+		// body //////////////////////////////////////
+		int full_steps;
+		int accl_steps;
+		int unif_steps;
+		int goal_steps;
+
+		#define aOUT_STEPS      (170)	//(170)
+		#define aSTABLE_STP		(120)	//(120)
+
+		full_steps = cnt_FX * ONEBLK - aOUT_STEPS - aSTABLE_STP;
+		accl_steps = ( (full_steps >> 1) > INFO_sFX_aMAX ) ? INFO_sFX_aMAX : (full_steps >> 1);
+		unif_steps = full_steps - (accl_steps << 1);
+
+		// stable
+			spd_diff = 0;	goal_steps = aSTABLE_STP;
+			equal_spd_ptr();
+			while (steps < goal_steps) 	{adj_O();	sync_step();}
+		// enaccl
+			spd_diff = 1;   goal_steps += accl_steps;
+			equal_spd_ptr();
+			while (steps < goal_steps) {adj_O();    sync_step();}
+		// unif
+			spd_diff = 0;   goal_steps += unif_steps;
+			equal_spd_ptr();
+			while (steps < goal_steps) {adj_O();    sync_step();}
+		// deaccl
+			spd_diff = -1;  goal_steps += accl_steps;
+			equal_spd_ptr();
+			while (steps < goal_steps) {
+				adj_O();
+				sync_step();
+			}
+
+			refresh_level();
+			refresh_edge();
+			if (INFO_sFX_aMOD)  spd_diff = -2;
+			else                spd_diff = 0;
+		// wait edge
+			reset_steps();
+			while ( aOUT_STEPS > steps )    {
+				if (INFO_sFX_aMOD)
+					if ( spd_ptr_L <= INFO_iSPD_SCAN )  {
+						spd_diff = 0;
+						spd_ptr  = INFO_iSPD_SCAN;
+					}
+				if ( edge_info_L90 == EDGE_DN || edge_info_R90 == EDGE_DN ) {
+					goto REMAIN_STEP_sAFF;
+				}
+				scan_level();
+				scan_edge();
+				adj_O();
+				sync_step();
+			}
+			goto END_sAFF;
+		// remain step
+		REMAIN_STEP_sAFF:
+		reset_steps();
+		while( ONEBLK - EDGESTEP_90 > steps )   {
+			if (INFO_sFX_aMOD)
+				if ( spd_ptr_L <= INFO_iSPD_SCAN )  {
+					spd_diff = 0;
+					spd_ptr  = INFO_iSPD_SCAN;
+				}
+			adj_O();
+			//scan_level();
+			//scan_edge();
+			sync_step();
+		}
+
+		END_sAFF:
+		reset_spd_diff();   spd_ptr = INFO_iSPD_SCAN;
+
+		#ifndef DISABLE_OVERSTP
+		INFO_overSTP = 0;
+		#endif
+
+		return;
+	}
+	// END accl ///////////////////////////////////////////////////////
+
+	reset_steps();
+	reset_spd_diff();
+	//spd_ptr = INFO_iSPD_SCAN;
+	enable_adj();
+	#ifndef DISABLE_OVERSTP
+	steps += INFO_overSTP;
+	#endif
+
+	//  for accl scanning
+	if (INFO_sFX_aMOD)  {
+		if (spd_ptr_L  <= INFO_iSPD_SCAN + 5)   {
+			spd_ptr     = INFO_iSPD_SCAN;
+			spd_diff    = 1;
+		}
+	}
+	else    spd_ptr = INFO_iSPD_SCAN;
+
+	#define stEDG   100
+	while(stEDG > steps)    {
+		if (INFO_sFX_aMOD)
+			if ( spd_ptr_L > INFO_sFX_aSPD )    reset_spd_diff();
+		adj_O();
+		sync_step();
+	}
+	refresh_level();
+	refresh_edge();
+	while(CHKSTEP > steps)      {
+		if (INFO_sFX_aMOD)
+			if ( spd_ptr_L > INFO_sFX_aSPD )    reset_spd_diff();
+		if ( edge_info_L90 == EDGE_DN || edge_info_R90 == EDGE_DN ) {
+			edge_info_L90 = edge_info_R90 = EDGE_UNKNOWN;
+			steps = EDGESTEP_90;
+		}
+		scan_level();
+
+		scan_edge();
+		adj_O();
+		sync_step();
+	}
+
+	// ALGOL
+	run_algol();
+
+	if (INFO_sFX_aMOD)  {
+		if (run_queue[ run_fptr ] != run_sFX)   spd_diff = -2;
+		if (run_fptr == run_rptr)               spd_diff = -2;
+	}
+
+	while(ONEBLK > steps)   {
+		if (INFO_sFX_aMOD)
+			if ( spd_ptr_L <= INFO_iSPD_SCAN )  {
+				spd_diff = 0;
+				spd_ptr = INFO_iSPD_SCAN;
+			}
+		if ( edge_info_L90 == EDGE_DN || edge_info_R90 == EDGE_DN ) {
+			edge_info_L90 = edge_info_R90 = EDGE_UNKNOWN;
+			steps = EDGESTEP_90;
+		}
+		scan_level();
+		scan_edge();
+		adj_O();
+		sync_step();
+	}
+
+	#ifndef DISABLE_OVERSTP
+	INFO_overSTP = steps - ONEBLK;
+	#endif
+}
+
+void run_sBX()
+{
+	#ifdef  DEBUG_SHOW_INFO
+		motor_stop();
+		wait_key();
+		show_maze();
+		show_path();
+		motor_start();
+	#endif
+
+	#define iFSTP   (HALFBLK)      			// in
+	#define oFSTP   (HALFBLK	-15	)      	// out
+
+	// update dir,pos
+	update_pos(B);
+
+	reset_steps();
+	reset_spd_diff();
+	//spd_ptr = INFO_iSPD_SCAN;
+
+	enable_adj();
+	//disable_adj();
+
+	#ifndef DISABLE_OVERSTP
+	steps += INFO_overSTP;
+	#endif
+
+	#ifndef DISABLE_WATCH_FWALL_B
+	// when front wall exists
+
+//	#define WATCH_STOP_THRS 30
+//	if (ss_value[SS_L0] > ssv_L0[WATCH_STOP_THRS] &&
+//		ss_value[SS_R0] > ssv_R0[WATCH_STOP_THRS])  {
+	if ( ss_value[SS_L0] > threshold_L0 &&
+		 ss_value[SS_R0] > threshold_R0 )	{
+
+		adj_pos_stop();
+	}
+	else    {
+	#endif
+	#ifdef DISABLE_WATCH_FWALL_B
+	{
+	#endif
+	// when front wall NOT exist
+		spd_diff = -1; while ( spd_ptr_L > 10 ) { 	adj_O();  equal_spd_ptr();}
+		spd_diff = 0 ; equal_spd_ptr();
+		while ( iFSTP > steps ) {
+			adj_O();
+			sync_step();
+		}
+		motor_stop();
+	}
+
+	reset_spd_diff();
+	disable_adj();
+
+	// adjust position
+	adj_pos();      sys_delay(50);
+
+	// decide turning direction
+	void (*reverse)();
+	int comp = pos_L90[ss_value[SS_L90]] + pos_R90[ss_value[SS_R90]];
+	if ( comp > 255 ) 	reverse = reverse_L;
+	else				reverse = reverse_R;
+
+	// Turn //////////////////////////////////////////////////////////////
+	motor_stop();
+	reset_steps();	reset_spd_ptr();	reset_spd_diff();
+	disable_adj();
+	reverse();
+	motor_start();
+
+	spd_diff = 1;   reset_spd_ptr();    while ( tACCLSTP           > steps );
+	spd_diff = 0;   equal_spd_ptr();    while ( TURNSTP - tACCLSTP > steps );
+	spd_diff = -1;                      while ( TURNSTP            > steps );
+	spd_diff = 0;   reset_spd_ptr();
+
+	motor_stop();	sys_delay(50);//sys_delay(150);
+	reverse();
+
+	disable_adj();
+
+	refresh_ss_history();
+	refresh_level();
+	refresh_edge();
+	reset_steps();  reset_spd_ptr();
+	spd_diff = 1;
+	motor_start();
+	//////////////////////////////////////////////////////////////////////
+
+	while ( oFSTP > steps ) {
+		if ( spd_ptr_L >= INFO_iSPD_SCAN )    { spd_diff = 0; spd_ptr = INFO_iSPD_SCAN;    }
+
+		///*// EDGE
+		if ( edge_info_L90 == EDGE_DN ||
+			 edge_info_R90 == EDGE_DN )	{
+			led_on(LED_SHOW_V);
+			goto REMAIN_STEP_sBX;
+		} else led_off(PIO_LED_ALL);
+		//*/
+
+		scan_level();
+		scan_edge();
+		adj_O();
+		equal_spd_ptr();
+		sync_step();
+	}
+	goto END_sBX;
+
+	// EDGE /////////////////////////////////////
+	REMAIN_STEP_sBX:
+	reset_steps();
+	while( ONEBLK - EDGESTEP_90 > steps )   {
+		adj_O();
+		//scan_level();
+		//scan_edge();
+		sync_step();
+	}
+	/////////////////////////////////////////////
+
+	END_sBX:
+	#ifndef DISABLE_OVERSTP
+	INFO_overSTP = 0;
+	#endif
+
+	enable_adj();
+	spd_diff = 0;
+	spd_ptr  = INFO_iSPD_SCAN;
+}
+void run_sLX()
+{
+	#ifdef  DEBUG_SHOW_INFO
+		motor_stop();
+		wait_key();
+		show_maze();
+		show_path();
+		motor_start();
+	#endif
+
+	set_tSPD();
+
+	// update dir,pos
+	update_pos(L);
+
+	reset_steps();  reset_spd_diff();   spd_ptr = INFO_iSPD_SCAN;
+	enable_adj();
+
+	#ifndef DISABLE_OVERSTP
+	steps += INFO_overSTP;
+	#endif
+
+	#define WATCH_THRS_L    30
+	if ( ss_value[SS_L0] < ssv_L0[WATCH_THRS_L] )   {
+		while(INFO_sLX_inSTP > steps)   {
+			adj_O();
+			sync_step();
+		}
+	}
+
+	#ifndef DISABLE_WATCH_FWALL
+	else    {
+		unsigned char tTHRS_L;
+		tTHRS_L = ssv_L0[INFO_sLX_tPOS];
+
+		while ( cnt_ss_history(SS_L0,tTHRS_L) < 4 )    {
+			adj_O();
+			sync_step();
+		}
+	}
+	#endif
+
+	disable_adj();
+	turn_left (	INFO_iSPD_SCAN,
+				INFO_sLX_aSTP,
+				INFO_sLX_uSTP,
+				INFO_sLX_dPL,
+				INFO_sLX_dPR);
+
+	//refresh_ss_history();
+	reset_steps();
+
+	// ALGOL
+	run_algol();
+
+
+	enable_adj();
+	while(INFO_sLX_outSTP > steps)  {
+		adj_O();
+		sync_step();
+	}
+
+	#ifndef DISABLE_OVERSTP
+	INFO_overSTP = steps - INFO_sLX_outSTP;
+	#endif
+
+	set_fSPD();
+}
+void run_sRX()
+{
+	#ifdef  DEBUG_SHOW_INFO
+		motor_stop();
+		wait_key();
+		show_maze();
+		show_path();
+		motor_start();
+	#endif
+
+	set_tSPD();
+
+	// update dir,pos
+	update_pos(R);
+
+	reset_steps();  reset_spd_diff();   spd_ptr = INFO_iSPD_SCAN;
+	enable_adj();
+
+	#ifndef DISABLE_OVERSTP
+	steps += INFO_overSTP;
+	#endif
+
+	#define WATCH_THRS_R    30
+	if ( ss_value[SS_R0] < ssv_R0[WATCH_THRS_R] )   {
+		while(INFO_sRX_inSTP > steps)   {
+			adj_O();
+			sync_step();
+		}
+	}
+
+	#ifndef  DISABLE_WATCH_FWALL
+	else    {
+		unsigned char tTHRS_R;
+		tTHRS_R = ssv_R0[INFO_sRX_tPOS];
+		while ( cnt_ss_history(SS_R0,tTHRS_R) < 4  )    {
+			adj_O();
+			sync_step();
+		}
+	}
+	#endif
+
+	disable_adj();
+	turn_right(	INFO_iSPD_SCAN,
+				INFO_sRX_aSTP,
+				INFO_sRX_uSTP,
+				INFO_sRX_dPL,
+				INFO_sRX_dPR);
+
+	//refresh_ss_history();
+	reset_steps();
+
+	// ALGOL
+	run_algol();
+
+	enable_adj();
+	while(INFO_sRX_outSTP > steps)  {
+		adj_O();
+		sync_step();
+	}
+
+	#ifndef DISABLE_OVERSTP
+	INFO_overSTP = steps - INFO_sRX_outSTP;
+	#endif
+
+	set_fSPD();
+}

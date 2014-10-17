@@ -1,0 +1,140 @@
+// RUSH mode setting ////////////////////////////////////////////////
+void set_run_rush_120()	   	// 120 steps, 65.0237 cm/s
+{
+	set_run_rush 	= set_run_rush_120;
+
+	// The accelation over 10 m/s^2 is
+	// very poor with floor's dirty and so on !!!
+
+	// common (auxiliary)
+	INFO_iSPD_RUSH	= 120;
+	INFO_iSPD_SRUSH	= 120;	// 120 steps, 65.0237 cm/s
+	// aSFRL		SR45
+	INFO_aSFRL_inSTP= 50+60;
+	INFO_aSFRL_aSTP = 50;
+	INFO_aSFRL_uSTP	= 172;
+	INFO_aSFRL_dPL	= 2;
+	INFO_aSFRL_dPR	= 2;
+	// aSFRF		SR90
+	INFO_aSFRF_inSTP= 120	+80;
+	INFO_aSFRF_aSTP	= 50;
+	INFO_aSFRF_uSTP	= 397+1;
+	INFO_aSFRF_dPL	= 2;
+	INFO_aSFRF_dPR	= 2;
+	// aSFRRL		SR135
+	INFO_aSFRRL_inSTP= 145+40;
+	INFO_aSFRRL_aSTP = 59;
+	INFO_aSFRRL_uSTP = 551	-7;
+	INFO_aSFRRL_dPL	 = 2;
+	INFO_aSFRRL_dPR	 = 2;
+	// rFF		F		O to O
+	INFO_rFF_aMAX	= 800 ;
+	// rFR		R45		O to D
+	INFO_rFR_inSTP	= 64	-20;
+	INFO_rFR_aSTP	= 50;
+	INFO_rFR_uSTP	= 171	-2	-1	-2		-3;
+	INFO_rFR_dPL	= 2;
+	INFO_rFR_dPR	= 2;
+	INFO_rFR_outSTP	= 5;
+	// rFL		L45		O to D
+	INFO_rFL_inSTP	= 64	-40;
+	INFO_rFL_aSTP	= 50;
+	INFO_rFL_uSTP	= 171	+2	-2+1;
+	INFO_rFL_dPL	= 2;
+	INFO_rFL_dPR	= 2;
+	INFO_rFL_outSTP	= 5;
+	// rFRF		R90		O to O
+	INFO_rFRF_inSTP	= 145	-15	-2;
+	INFO_rFRF_aSTP	= 50;
+	INFO_rFRF_uSTP	= 397+1	-4-3	+1;
+	INFO_rFRF_dPL	= 2;
+	INFO_rFRF_dPR	= 2;
+	INFO_rFRF_outSTP= 112;
+	// rFLF		L90	    O to O
+	INFO_rFLF_inSTP	= 145	-15;
+	INFO_rFLF_aSTP	= 50;
+	INFO_rFLF_uSTP	= 397	+4	+2;
+	INFO_rFLF_dPL	= 2;
+	INFO_rFLF_dPR	= 2;
+	INFO_rFLF_outSTP= 112;
+	// rFRR		R135	O to D
+	// Note spd LEAP
+	INFO_rFRR_inSTP	= 117	+3	;
+	INFO_rFRR_aSTP	= 59;
+	INFO_rFRR_uSTP	= 551	-4-4	-1;
+	INFO_rFRR_dPL	= 2;
+	INFO_rFRR_dPR 	= 2;
+	INFO_rFRR_outSTP= 1;
+	// rFLL		L135	O to D
+	// Note spd LEAP
+	INFO_rFLL_inSTP	= 117 	+3	-5	-5;
+	INFO_rFLL_aSTP	= 59;
+	INFO_rFLL_uSTP	= 551	+1;
+	INFO_rFLL_dPL	= 2;
+	INFO_rFLL_dPR	= 2;
+	INFO_rFLL_outSTP= 1;
+	// rFRRF	RU		O to O
+	// Note spd LEAP
+	INFO_rFRRF_inSTP	= 90	-15;
+	INFO_rFRRF_aSTP		= 50	-1;
+	INFO_rFRRF_uSTP		= 863	-1;
+	INFO_rFRRF_dPL		= 2;
+	INFO_rFRRF_dPR		= 2;
+	INFO_rFRRF_outSTP	= 80	-15;
+	// rFLLF	LU		O to O
+	// Note spd LEAP
+	INFO_rFLLF_inSTP	= 90	-15;
+	INFO_rFLLF_aSTP		= 50;
+	INFO_rFLLF_uSTP		= 863;
+	INFO_rFLLF_dPL		= 2;
+	INFO_rFLLF_dPR		= 2;
+	INFO_rFLLF_outSTP	= 80	-15;
+	// rRF		R45 out		D to O
+	INFO_rRF_inSTP	= 150	+25	   -5	;
+	INFO_rRF_aSTP	= INFO_rFR_aSTP;
+	INFO_rRF_uSTP	= INFO_rFR_uSTP;
+	INFO_rRF_dPL	= INFO_rFR_dPL;
+	INFO_rRF_dPR	= INFO_rFR_dPR;
+	INFO_rRF_outSTP	= 70 - 15	-15 -15	-15;
+	// rLF		L45 out		D to O
+	INFO_rLF_inSTP	= 150	+25		-15	;
+	INFO_rLF_aSTP	= INFO_rFL_aSTP;
+	INFO_rLF_uSTP	= INFO_rFL_uSTP;
+	INFO_rLF_dPL	= INFO_rFL_dPL;
+	INFO_rLF_dPR	= INFO_rFL_dPR;
+	INFO_rLF_outSTP	= 70 - 15 	-15 -15	-15;
+	// rRRF		R135 out	D to O
+	// Note spd LEAP
+	INFO_rRRF_inSTP	= 110	+7	+10	-12;
+	INFO_rRRF_aSTP	= INFO_rFRR_aSTP;
+	INFO_rRRF_uSTP	= INFO_rFRR_uSTP;
+	INFO_rRRF_dPL	= INFO_rFRR_dPL;
+	INFO_rRRF_dPR	= INFO_rFRR_dPR;
+	INFO_rRRF_outSTP= 70;
+	// rLLF		L135 out	D to O
+	// Note spd LEAP
+	INFO_rLLF_inSTP = 110	+7	+10	-12;
+	INFO_rLLF_aSTP	= INFO_rFLL_aSTP;
+	INFO_rLLF_uSTP	= INFO_rFLL_uSTP;
+	INFO_rLLF_dPL	= INFO_rFLL_dPL;
+	INFO_rLLF_dPR	= INFO_rFLL_dPR;
+	INFO_rLLF_outSTP= 70;
+	// rRR					D to D
+	// Note spd LEAP
+	INFO_rRR_inSTP	= 110	-3	+10		-20;
+	INFO_rRR_aSTP	= 90	-5			;
+	INFO_rRR_uSTP	= 228	-10 +20	-1	-1			;
+	INFO_rRR_dPL	= 1;
+	INFO_rRR_dPR	= 2;
+	INFO_rRR_outSTP	= 1;
+	// rLL					D to D
+	// Note spd LEAP
+	INFO_rLL_inSTP	= 110	-3	+10		-20;
+	INFO_rLL_aSTP	= 90	-5			+1;
+	INFO_rLL_uSTP	= 228	-10 +21		-5	-1		;
+	INFO_rLL_dPL	= 2;
+	INFO_rLL_dPR	= 1;
+	INFO_rLL_outSTP	= 1;
+	// rDF (rLR/rRL)
+	INFO_rDF_aMAX	= INFO_rFF_aMAX;
+}

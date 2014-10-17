@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define RADIUS		2.6899427 		 // cm
+#define ONEBLK		18.0			 // cm
+#define ANGLE		0.01570796327	 // rad/step  ,M_PI*0.9/180
+#define ONESTEP 	(RADIUS * ANGLE) // cm
+#define CYCLE		10000000l		 // 10MHz
+
+#define SPD_MIN    	6.5			// cm/s
+#define STEP_MAX   	3000		// steps
+
+#define ACCL   	   	150.0		// cm/s^2
+
+#define ACCL1      	150.0		// cm/s^2
+#define ACCL2	   	200.0		// cm/s^2
+#define ACCL3	   	250.0		// cm/s^2
+#define ACCL4	   	300.0		// cm/s^2
+#define ACCL5	   	350.0		// cm/s^2
+
+#define SECTION1	500			// steps
+#define SECTION2	1000		// steps
+#define SECTION3	1500		// steps
+#define SECTION4	2000		// steps
+#define SECTION5	STEP_MAX	// steps
+
+
+
+
+
+void make_spd_tbl();
+
+void main()
+{
+	make_spd_tbl();
+}
+
+void make_spd_tbl()
+{
+	FILE *fp;
+	if ((fp = fopen("speed.tbl","w")) == NULL)	{
+		printf("FILE open error\n");
+		exit(-1);
+	}
+
+	fprintf(fp, "\n   unsigned int spd_tbl[]= {\n\n");
+
+	fprintf(fp, "   // Wheel radius  : %g cm \n",RADIUS);
+	fprintf(fp, "   // Oneblock Size : %g cm \n",ONEBLK);
+	fprintf(fp, "   // One angle     : %g rad/step\n",ANGLE);
+	fprintf(fp, "   // Spd Min       : %g cm/s\n",SPD_MIN);
+	fprintf(fp, "   // Step Max		 : %d steps\n",STEP_MAX);
+	fprintf(fp, "   // Accl			 : %g cm/s^2\n\n",ACCL);
+
+	double step;
+	double speed      = SPD_MIN;
+	double need_time  = ONESTEP 	/ speed;
+	double need_count = need_time 	* CYCLE;
+	double delta_speed;
+
+	for( step=0 ; step < STEP_MAX ; step++ )	{
+		fprintf(fp, "		%uu, // %d steps, %g cm/s \n",(unsigned int)need_count,(unsigned int)(step),speed);
+
+		delta_speed = ACCL 		* need_time;
+		need_time   = ONESTEP 	/ ( speed + delta_speed );
+		need_count  = need_time * CYCLE;
+		speed       = ONESTEP 	/ need_time;
+	}
+
+	fprintf(fp,"     };\n\n");
+
+	fclose(fp);
+}

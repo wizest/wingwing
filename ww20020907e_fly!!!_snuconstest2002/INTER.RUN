@@ -1,0 +1,892 @@
+//#define DEBUG_ISCAN
+
+// scan -> rush /////////////////////////////////////////////////////
+void run_irFF()		// in Forward
+{
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		show_path();	show_mouse();
+		wait_key();
+		motor_start();
+	#endif
+
+	// update dir,pos
+	update_pos(F);
+
+/*
+	reset_steps();
+	#define stEDG   100
+	while(stEDG > steps)    { adj_O();	sync_step(); }
+
+	refresh_level();
+	refresh_edge();
+
+	// out steps
+	while(INFO_irFF_outSTP > steps)      {
+		if ( edge_info_L90 == EDGE_DN ||
+			 edge_info_R90 == EDGE_DN ) {
+			edge_info_L90 =
+			edge_info_R90 = EDGE_UNKNOWN;
+			steps = EDGESTEP_90;
+		}
+		scan_level();
+		scan_edge();
+		adj_O();
+		sync_step();
+	}
+*/
+	// out steps
+	reset_steps();
+	#ifndef DISABLE_OVERSTP
+	steps += INFO_overSTP;
+	#endif
+
+	while(INFO_irFF_outSTP > steps)      {
+		adj_O();
+		sync_step();
+	}
+
+
+	refresh_level();
+	refresh_edge();
+
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		motor_start();
+	#endif
+
+}
+void run_irFL()		// in L45
+{
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		show_path();	show_mouse();
+		wait_key();
+		motor_start();
+	#endif
+
+	// update dir,pos
+	update_pos(F);
+
+	refresh_level();
+	refresh_edge();
+
+	run_rush_O2D(	L,
+					INFO_irFL_inSTP,
+					INFO_irFL_aSTP,
+					INFO_irFL_uSTP,
+					2,					// dPL
+					2,					// dPR
+					INFO_irFL_outSTP
+				);
+
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		motor_start();
+	#endif
+}
+void run_irFR()		// in R45
+{
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		show_path();	show_mouse();
+		wait_key();
+		motor_start();
+	#endif
+
+	// update dir,pos
+	update_pos(F);
+
+	refresh_level();
+	refresh_edge();
+
+	run_rush_O2D(	R,
+					INFO_irFR_inSTP,
+					INFO_irFR_aSTP,
+					INFO_irFR_uSTP,
+					2,					// dPL
+					2,					// dPR
+					INFO_irFR_outSTP
+				);
+
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		motor_start();
+	#endif
+}
+void run_irLF()		// in L90
+{
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		show_path();	show_mouse();
+		wait_key();
+		motor_start();
+	#endif
+
+	// update dir,pos
+	//update_pos(L);	Do in sLX();
+
+	run_sLX();
+
+	// out steps
+	reset_steps();
+	refresh_level();
+	refresh_edge();
+	while(INFO_irLF_outSTP > steps)	{
+		scan_level();
+		scan_edge();
+		adj_O();
+		sync_step();
+	}
+
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		motor_start();
+	#endif
+}
+void run_irRF()		// in R90
+{
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		show_path();	show_mouse();
+		wait_key();
+		motor_start();
+	#endif
+
+	// update dir,pos
+	//update_pos(R);	DO in sRX();
+
+	run_sRX();
+
+	// out steps
+	reset_steps();
+	refresh_level();
+	refresh_edge();
+	while(INFO_irRF_outSTP > steps)	{
+		scan_level();
+		scan_edge();
+		adj_O();
+		sync_step();
+	}
+
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		motor_start();
+	#endif
+}
+void run_irLL()		// in L135
+{
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		show_path();	show_mouse();
+		wait_key();
+		motor_start();
+	#endif
+
+	// update dir,pos
+	update_pos(L);
+
+	refresh_level();
+	refresh_edge();
+	level_P_L45	= level_C_L45 = level_P_R45 = level_C_R45 = SS_HIGH;
+
+	#if defined(DISABLE_OVERSTP)
+		run_rush_O2D(	L,
+						INFO_irLL_inSTP,
+						INFO_irLL_aSTP,
+						INFO_irLL_uSTP,
+						2,					// dPL
+						2,					// dPR
+						INFO_irLL_outSTP
+					);
+	#else
+		run_rush_O2D(	L,
+						INFO_irLL_inSTP - INFO_overSTP,
+						INFO_irLL_aSTP,
+						INFO_irLL_uSTP,
+						2,					// dPL
+						2,					// dPR
+						INFO_irLL_outSTP
+					);
+	#endif
+
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		motor_start();
+	#endif
+}
+void run_irRR()		// in R135
+{
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		show_path();	show_mouse();
+		wait_key();
+		motor_start();
+	#endif
+
+	// update dir,pos
+	update_pos(R);
+
+	refresh_level();
+	refresh_edge();
+	level_P_L45	= level_C_L45 = level_P_R45 = level_C_R45 = SS_HIGH;
+
+	#if defined(DISABLE_OVERSTP)
+		run_rush_O2D(	R,
+						INFO_irRR_inSTP,
+						INFO_irRR_aSTP,
+						INFO_irRR_uSTP,
+						2,					// dPL
+						2,					// dPR
+						INFO_irRR_outSTP
+					);
+	#else
+		run_rush_O2D(	R,
+						INFO_irRR_inSTP - INFO_overSTP,
+						INFO_irRR_aSTP,
+						INFO_irRR_uSTP,
+						2,					// dPL
+						2,					// dPR
+						INFO_irRR_outSTP
+					);
+	#endif
+
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		motor_start();
+	#endif
+}
+void run_irLR()		// in twist L45
+{
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		show_path();	show_mouse();
+		wait_key();
+		motor_start();
+	#endif
+
+	// update dir,pos
+	update_pos(L);
+
+	reset_steps();
+	#ifndef DISABLE_OVERSTP
+	steps += INFO_overSTP;
+	#endif
+
+	while(INFO_irLR_inSTP > steps)   {adj_O();   sync_step();}
+
+	disable_adj();
+	turn_left (	INFO_iSPD_SCAN,
+				INFO_irLR_a1STP,
+				INFO_irLR_u1STP,
+				INFO_irLR_dPL,		// dPL
+				INFO_irLR_dPR		// dPR
+			  );
+	turn_right(	INFO_iSPD_SCAN,
+				INFO_irLR_a2STP,
+				INFO_irLR_u2STP,
+				INFO_irLR_dPR,		// dPL
+				INFO_irLR_dPL		// dPR
+			  );
+	enable_adj();
+
+	// out steps
+	reset_steps();
+	refresh_level_D();
+	refresh_edge();
+	while(INFO_irLR_outSTP > steps)		{
+		scan_level_D();
+		scan_edge();
+		adj_DF0();
+		sync_step();
+	}
+
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		motor_start();
+	#endif
+}
+void run_irRL()		// in twist R45
+{
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		show_path();	show_mouse();
+		wait_key();
+		motor_start();
+	#endif
+
+	// update dir,pos
+	update_pos(R);
+
+	reset_steps();
+	#ifndef DISABLE_OVERSTP
+	steps += INFO_overSTP;
+	#endif
+
+	while(INFO_irRL_inSTP > steps)   {adj_O();   sync_step();}
+
+	disable_adj();
+	turn_right(	INFO_iSPD_SCAN,
+				INFO_irRL_a1STP,
+				INFO_irRL_u1STP,
+				INFO_irRL_dPL,		// dPL
+				INFO_irRL_dPR		// dPR
+			  );
+	turn_left (	INFO_iSPD_SCAN,
+				INFO_irRL_a2STP,
+				INFO_irRL_u2STP,
+				INFO_irRL_dPR,		// dPL
+				INFO_irRL_dPL		// dPR
+			  );
+	enable_adj();
+
+	// out steps
+	reset_steps();
+	refresh_level_D();
+	refresh_edge();
+	while(INFO_irRL_outSTP > steps)		{
+		scan_level_D();
+		scan_edge();
+		adj_DF0();
+		sync_step();
+	}
+
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		motor_start();
+	#endif
+}
+
+// rush -> scan /////////////////////////////////////////////////////
+void run_isFF()		// out Forward
+{
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		show_path();	show_mouse();
+		wait_key();
+		motor_start();
+	#endif
+
+	// update dir,pos
+	update_pos(F);	update_pos(F);
+
+
+	/*
+	// out steps
+	reset_steps();
+	while(INFO_isFF_outSTP > steps)	{
+		adj_O();
+		sync_step();
+	}
+	*/
+
+
+	reset_steps();
+	#define stEDG_isFF   ONEBLK
+	while(stEDG_isFF > steps)    { adj_O();	sync_step(); }
+
+	refresh_level();
+	refresh_edge();
+
+	// out steps
+	while(INFO_isFF_outSTP > steps)      {
+		if ( edge_info_L90 == EDGE_DN ||
+			 edge_info_R90 == EDGE_DN ) {
+			edge_info_L90 =
+			edge_info_R90 = EDGE_UNKNOWN;
+			steps = EDGESTEP_90;
+			goto REMAIN_STP_isFF;
+		}
+		scan_level();
+		scan_edge();
+		adj_O();
+		sync_step();
+	}
+	goto END_STP_isFF;
+
+REMAIN_STP_isFF:
+	reset_steps();
+	while( ONEBLK - EDGESTEP_90 > steps )   {
+		adj_O();
+		sync_step();
+	}
+
+END_STP_isFF:
+
+	#ifndef DISABLE_OVERSTP
+	INFO_overSTP = 0;
+	#endif
+
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		motor_start();
+	#endif
+}
+void run_isLF()		// out L45
+{
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		show_path();	show_mouse();
+		wait_key();
+		motor_start();
+	#endif
+
+	// update dir,pos
+	update_pos(L);	update_pos(F);
+
+	run_rush_D2O(	L,
+					INFO_isLF_inSTP,
+					INFO_isLF_aSTP,
+					INFO_isLF_uSTP,
+					2,					// dPL
+					2,					// dPR
+					INFO_isLF_outSTP
+				);
+
+	#ifndef DISABLE_OVERSTP
+	INFO_overSTP = 0;
+	#endif
+
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		motor_start();
+	#endif
+}
+void run_isRF()		// out R45
+{
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		show_path();	show_mouse();
+		wait_key();
+		motor_start();
+	#endif
+
+	// update dir,pos
+	update_pos(R);	update_pos(F);
+
+	run_rush_D2O(	R,
+					INFO_isRF_inSTP,
+					INFO_isRF_aSTP,
+					INFO_isRF_uSTP,
+					2,					// dPL
+					2,					// dPR
+					INFO_isRF_outSTP
+				);
+
+	#ifndef DISABLE_OVERSTP
+	INFO_overSTP = 0;
+	#endif
+
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		motor_start();
+	#endif
+}
+void run_isFL()     // out L90
+{
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		show_path();	show_mouse();
+		wait_key();
+		motor_start();
+	#endif
+
+	// update dir,pos
+	update_pos(F);
+	update_pos(L);
+
+	// wait edge
+	wait_edge(  scan_level,
+				adj_O,
+				WAIT_EDGE_L,
+				edge_info_L45,
+				edge_info_R45
+			 );
+
+	// in steps
+	reset_steps();
+	while(INFO_isFL_inSTP > steps)	{
+		adj_O();
+		sync_step();
+	}
+
+	disable_adj();
+	turn_left (	INFO_iSPD_SCAN,
+				INFO_sLX_aSTP,
+				INFO_sLX_uSTP,
+				INFO_sLX_dPL,
+				INFO_sLX_dPR);
+	reset_steps();
+	enable_adj();
+
+	// out steps
+	while(INFO_sLX_outSTP > steps)  {
+		adj_O();
+		sync_step();
+	}
+
+	#ifndef DISABLE_OVERSTP
+	INFO_overSTP = 0;
+	#endif
+
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		motor_start();
+	#endif
+}
+void run_isFR()		// out R90
+{
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		show_path();	show_mouse();
+		wait_key();
+		motor_start();
+	#endif
+
+	// update dir,pos
+	update_pos(F);
+	update_pos(R);
+
+	// wait edge
+	wait_edge(  scan_level,
+				adj_O,
+				WAIT_EDGE_R,
+				edge_info_L45,
+				edge_info_R45
+			 );
+
+	// in steps
+	reset_steps();
+	while(INFO_isFR_inSTP > steps)	{
+		adj_O();
+		sync_step();
+	}
+
+	disable_adj();
+	turn_right(	INFO_iSPD_SCAN,
+				INFO_sRX_aSTP,
+				INFO_sRX_uSTP,
+				INFO_sRX_dPL,
+				INFO_sRX_dPR);
+	reset_steps();
+	enable_adj();
+
+	// out steps
+	while(INFO_sRX_outSTP > steps)  {
+		adj_O();
+		sync_step();
+	}
+
+	#ifndef DISABLE_OVERSTP
+	INFO_overSTP = 0;
+	#endif
+
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		motor_start();
+	#endif
+}
+/* Origin
+void run_isFL()     // out L90
+{
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		show_path();	show_mouse();
+		wait_key();
+		motor_start();
+	#endif
+
+	// update dir,pos
+	update_pos(F);
+	//update_pos(L);	DO in sLX();
+
+	// wait edge
+	wait_edge(  scan_level,
+				adj_O,
+				WAIT_EDGE_L,
+				edge_info_L45,
+				edge_info_R45
+			 );
+
+	// in steps
+	reset_steps();
+	while(INFO_isFL_inSTP > steps)	{
+		adj_O();
+		sync_step();
+	}
+
+
+	#ifndef DISABLE_OVERSTP
+	INFO_overSTP = 0;
+	#endif
+
+	run_sLX();
+
+	#ifndef DISABLE_OVERSTP
+	INFO_overSTP = 0;
+	#endif
+
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		motor_start();
+	#endif
+}
+void run_isFR()		// out R90
+{
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		show_path();	show_mouse();
+		wait_key();
+		motor_start();
+	#endif
+
+	// update dir,pos
+	update_pos(F);
+	//update_pos(R);	// DO in sRX();
+
+	// wait edge
+	wait_edge(  scan_level,
+				adj_O,
+				WAIT_EDGE_R,
+				edge_info_L45,
+				edge_info_R45
+			 );
+
+	// in steps
+	reset_steps();
+	while(INFO_isFR_inSTP > steps)	{
+		adj_O();
+		sync_step();
+	}
+
+	#ifndef DISABLE_OVERSTP
+	INFO_overSTP = 0;
+	#endif
+
+	run_sRX();
+
+	#ifndef DISABLE_OVERSTP
+	INFO_overSTP = 0;
+	#endif
+
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		motor_start();
+	#endif
+}
+*/
+
+void run_isLL()		// out L135
+{
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		show_path();	show_mouse();
+		wait_key();
+		motor_start();
+	#endif
+
+	// update dir,pos
+	update_pos(L);	update_pos(L);
+
+	run_rush_D2O(	L,
+					INFO_isLL_inSTP,
+					INFO_isLL_aSTP,
+					INFO_isLL_uSTP,
+					2,					// dPL
+					2,					// dPR
+					INFO_isLL_outSTP
+				);
+
+	#ifndef DISABLE_OVERSTP
+	INFO_overSTP = 0;
+	#endif
+
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		motor_start();
+	#endif
+}
+void run_isRR()		// out R135
+{
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		show_path();	show_mouse();
+		wait_key();
+		motor_start();
+	#endif
+
+	// update dir,pos
+	update_pos(R);	update_pos(R);
+
+	run_rush_D2O(	R,
+					INFO_isRR_inSTP,
+					INFO_isRR_aSTP,
+					INFO_isRR_uSTP,
+					2,					// dPL
+					2,					// dPR
+					INFO_isRR_outSTP
+				);
+
+	#ifndef DISABLE_OVERSTP
+	INFO_overSTP = 0;
+	#endif
+
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		motor_start();
+	#endif
+}
+void run_isLR()		// out twist R45	R!!
+{
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		show_path();	show_mouse();
+		wait_key();
+		motor_start();
+	#endif
+
+	// update dir,pos
+	update_pos(L);	update_pos(R);
+
+	// wait edge
+	wait_edge(  scan_level_D,
+				adj_DF0a,
+				WAIT_EDGE_L,
+				edge_info_L45,
+				edge_info_R45
+			 );
+
+	reset_steps();
+	while(INFO_isLR_inSTP > steps)   {
+		adj_DF0a();
+		sync_step();
+	}
+
+	disable_adj();
+	turn_left (	INFO_iSPD_SCAN,
+				INFO_isLR_a1STP,
+				INFO_isLR_u1STP,
+				INFO_isLR_dPL,		// dPL
+				INFO_isLR_dPR		// dPR
+			  );
+	turn_right(	INFO_iSPD_SCAN,
+				INFO_isLR_a2STP,
+				INFO_isLR_u2STP,
+				INFO_isLR_dPR,		// dPL
+				INFO_isLR_dPL		// dPR
+			  );
+	enable_adj();
+
+	// out steps
+	reset_steps();
+	while(INFO_isLR_outSTP > steps)		{
+		adj_O();
+		sync_step();
+	}
+
+	#ifndef DISABLE_OVERSTP
+	INFO_overSTP = 0;
+	#endif
+
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		motor_start();
+	#endif
+}
+void run_isRL()		// out twist L45	L!!
+{
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		show_path();	show_mouse();
+		wait_key();
+		motor_start();
+	#endif
+
+	// update dir,pos
+	update_pos(R);	update_pos(L);
+
+	// wait edge
+	wait_edge(  scan_level_D,
+				adj_DF0a,
+				WAIT_EDGE_R,
+				edge_info_L45,
+				edge_info_R45
+			 );
+
+	reset_steps();
+	while(INFO_isRL_inSTP > steps)   {
+		adj_DF0a();
+		sync_step();
+	}
+
+	disable_adj();
+	turn_right(	INFO_iSPD_SCAN,
+				INFO_isRL_a1STP,
+				INFO_isRL_u1STP,
+				INFO_isRL_dPL,		// dPL
+				INFO_isRL_dPR		// dPR
+			  );
+	turn_left (	INFO_iSPD_SCAN,
+				INFO_isRL_a2STP,
+				INFO_isRL_u2STP,
+				INFO_isRL_dPR,		// dPL
+				INFO_isRL_dPL		// dPR
+			  );
+	enable_adj();
+
+	// out steps
+	reset_steps();
+	while(INFO_isRL_outSTP > steps)		{
+		adj_O();
+		sync_step();
+	}
+
+	#ifndef DISABLE_OVERSTP
+	INFO_overSTP = 0;
+	#endif
+
+	#ifdef	DEBUG_ISCAN
+		motor_stop();	torque_off();
+		wait_key();
+		motor_start();
+	#endif
+}

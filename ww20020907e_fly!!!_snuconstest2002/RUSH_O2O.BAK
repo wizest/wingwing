@@ -1,0 +1,155 @@
+void run_rush_FF() // accl scanning
+{
+	// update dir,pos
+	update_pos(F);
+
+			 int  cnt_FF;
+//	unsigned int  v_dir,v_pos;
+	unsigned int  v_run_fptr;
+
+	reset_steps();
+	reset_spd_diff();
+	//spd_ptr = INFO_iSPD_RUSH;
+	enable_adj();
+
+	// count known rFF Block
+	cnt_FF 		= 1;
+	v_run_fptr 	= run_fptr;
+//	v_dir 		= mouse_dir;
+//	v_pos		= mouse_pos;
+	while ( v_run_fptr < run_rptr &&
+			run_queue[ v_run_fptr ] == run_rFF )	{
+//		v_pos  += dxy [ v_dir ];
+		v_run_fptr++;	cnt_FF++;
+	}
+
+	// process paths
+	unsigned int i;
+	i = cnt_FF - 1;	while ( i-- )	mouse_pos += dxy[ mouse_dir ];
+	i = cnt_FF - 1;	while ( i-- )  	get_run();
+
+	// body //////////////////////////////////////
+	int full_steps;
+	int accl_steps;
+	int unif_steps;
+	int goal_steps;
+
+	#define STABLE_iSTP		(77)//(100)	//(100)			// in
+	#define STABLE_oSTP		(77)//(100)	//(100)	//STABLE_STP	// out
+	#define EDGE_SCAN_STP	(100)	//(70) Don't Touch!!
+
+	full_steps = cnt_FF * ONEBLK - STABLE_iSTP - STABLE_oSTP - EDGE_SCAN_STP;
+	accl_steps = ( (full_steps >> 1) > INFO_rFF_aMAX ) ? INFO_rFF_aMAX : (full_steps >> 1);
+	unif_steps = full_steps - (accl_steps << 1);
+
+	// accl
+	//if ( cnt_FF > 1 )	{
+	if ( full_steps > 0 )	{
+
+		// stable in
+		if ( spd_ptr_L < INFO_iSPD_RUSH - 5 )	spd_diff = 1;
+		else									spd_diff = 0;
+		goal_steps = STABLE_iSTP;
+		equal_spd_ptr();
+		while (steps < goal_steps) 	{adj_O();	sync_step();}
+		// enaccl
+		spd_diff = 1;	goal_steps += accl_steps;
+		equal_spd_ptr();
+		while ( steps < goal_steps) {adj_O();	sync_step();}
+		// unif
+		spd_diff = 0; 	goal_steps += unif_steps;
+//		spd_diff = 0; 	goal_steps += unif_steps + (accl_steps >> 1); // UNSTABLE
+		equal_spd_ptr();
+		while (steps < goal_steps) 	{adj_O();	sync_step();}
+		// deaccl
+		spd_diff = -1;  goal_steps += accl_steps;
+//		spd_diff = -2;  goal_steps += (accl_steps >> 1); // UNSTABLE
+		equal_spd_ptr();
+		while (steps < goal_steps) 	{
+			adj_O();
+			if ( spd_ptr_L < INFO_iSPD_RUSH )	{	spd_diff = 0;	spd_ptr = INFO_iSPD_RUSH; }
+			sync_step();
+		}
+		// stable out
+		spd_diff = 0; 	goal_steps += STABLE_oSTP;
+		equal_spd_ptr();
+		while (steps < goal_steps) 	{adj_O();	sync_step();}
+	}
+	// DO NOT accl
+	else	{
+		// unif
+		goal_steps = ONEBLK - EDGE_SCAN_STP;
+		equal_spd_ptr();
+		if ( spd_ptr_L < INFO_iSPD_RUSH )	spd_diff = 1;
+		else								spd_diff = 0;
+		while (steps < goal_steps)	{
+			adj_O();
+			if ( spd_ptr_L > INFO_iSPD_RUSH )	{	spd_diff = 0;	spd_ptr = INFO_iSPD_RUSH; }
+			sync_step();
+		}
+	}
+
+	refresh_level();
+	refresh_edge();
+	reset_spd_diff();	spd_ptr = INFO_iSPD_RUSH;
+}
+void run_rush_O2O(int tDIR, int inSTP,int aSTP,int uSTP,int dPL,int dPR,int outSTP)
+{
+	set_tSPD();
+
+	reset_steps();
+	enable_adj();
+
+	equal_spd_ptr();
+	if ( spd_ptr_L < INFO_iSPD_RUSH )	spd_diff = 2;
+	else								spd_diff = 0;
+
+	// wait edge
+	while( 1 )	{
+		scan_level();
+		scan_edge();
+		adj_O();
+		if ( tDIR == L )	{
+			if ( edge_info_L45 == EDGE_DN ) {
+			//if ( edge_info_L45 == EDGE_DN || edge_info_R45 == EDGE_DN ) {
+				edge_info_L45 = edge_info_R45 = EDGE_UNKNOWN;
+				goto END_WAIT_EDGE_O2O;
+			}
+		}
+		else /* if ( tDIR == R ) */	{
+			if ( edge_info_R45 == EDGE_DN ) {
+			//if ( edge_info_R45 == EDGE_DN || edge_info_L45 == EDGE_DN ) {
+				edge_info_L45 = edge_info_R45 = EDGE_UNKNOWN;
+				goto END_WAIT_EDGE_O2O;
+			}
+		}
+		if ( spd_ptr_L > INFO_iSPD_RUSH )	{	spd_diff = 0;	spd_ptr = INFO_iSPD_RUSH; }
+		sync_step();
+	}
+	END_WAIT_EDGE_O2O:
+
+	reset_steps();
+	while(inSTP > steps)	{
+		adj_O();
+		if ( spd_ptr_L > INFO_iSPD_RUSH )	{	spd_diff = 0;	spd_ptr = INFO_iSPD_RUSH; }
+		sync_step();
+	}
+	disable_adj();
+	if 	( tDIR == L )		turn_left (INFO_iSPD_RUSH,aSTP,uSTP,dPL,dPR);
+	else /* (tDIR == R) */	turn_right(INFO_iSPD_RUSH,aSTP,uSTP,dPL,dPR);
+	reset_steps();
+	enable_adj();
+	refresh_level();
+	refresh_edge();
+	while(outSTP > steps)	{
+		scan_level();
+		scan_edge();
+		adj_O();
+		sync_step();
+	}
+
+	set_fSPD();
+}
+
+
+

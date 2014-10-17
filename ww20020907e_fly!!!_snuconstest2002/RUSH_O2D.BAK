@@ -1,0 +1,57 @@
+void run_rush_O2D(int tDIR, int inSTP,int aSTP,int uSTP,int dPL,int dPR,int outSTP)
+{
+	set_tSPD();
+
+	reset_steps();
+	enable_adj();
+
+	equal_spd_ptr();
+	if ( spd_ptr_L < INFO_iSPD_RUSH )	spd_diff = 2;
+	else								spd_diff = 0;
+
+	// wait edge
+	while(1)	{
+		scan_level();
+		scan_edge();
+		adj_O();
+		if ( tDIR == L )	{
+			if ( edge_info_L45 == EDGE_DN ) {
+			//if ( edge_info_L45 == EDGE_DN || edge_info_R45 == EDGE_DN ) {
+				edge_info_L45 = edge_info_R45 = EDGE_UNKNOWN;
+				goto END_WAIT_EDGE_O2D;
+			}
+		}
+		else /* if ( tDIR == R ) */	{
+			if ( edge_info_R45 == EDGE_DN ) {
+			//if ( edge_info_R45 == EDGE_DN || edge_info_L45 == EDGE_DN ) {
+				edge_info_L45 = edge_info_R45 = EDGE_UNKNOWN;
+				goto END_WAIT_EDGE_O2D;
+			}
+		}
+		if ( spd_ptr_L > INFO_iSPD_RUSH )	{	spd_diff = 0;	spd_ptr = INFO_iSPD_RUSH; }
+		sync_step();
+	}
+	END_WAIT_EDGE_O2D:
+
+	reset_steps();
+	while(inSTP > steps)	{
+		adj_O();
+		if ( spd_ptr_L > INFO_iSPD_RUSH )	{	spd_diff = 0;	spd_ptr = INFO_iSPD_RUSH; }
+		sync_step();
+	}
+	disable_adj();
+	if 	( tDIR == L )		turn_left (INFO_iSPD_RUSH,aSTP,uSTP,dPL,dPR);
+	else /* (tDIR == R) */	turn_right(INFO_iSPD_RUSH,aSTP,uSTP,dPL,dPR);
+	reset_steps();
+	enable_adj();
+	refresh_level_D();
+	refresh_edge();
+	while(outSTP > steps)	{
+		scan_level_D();
+		scan_edge();
+		adj_DF0a();
+		sync_step();
+	}
+
+	set_fSPD();
+}
